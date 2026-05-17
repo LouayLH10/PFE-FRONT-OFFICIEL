@@ -200,7 +200,7 @@ function Page() {
 
                       <td className="px-4 py-3">
                         <button
-                          disabled={d.status !== "SENT"}
+                          disabled={d.status !== "SENT" && d.status !== "PAID"}
                           onClick={() => downloadInvoice(d.id)}
                           className={`px-4 py-2 rounded-lg text-white transition ${
                             d.status === "SENT" || d.status === "PAID"

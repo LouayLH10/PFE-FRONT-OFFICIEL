@@ -10,6 +10,8 @@ import {
   CreditCard,
   FolderKanban,
   LogOut,
+  MessageCircle,
+  Puzzle,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -20,9 +22,11 @@ function Sidebar({ open, setOpen }: any) {
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
     { name: "Quotes", icon: FileText, path: "/features/quotes/pages" },
     { name: "Delivery Notes", icon: Truck, path: "/features/delivery-note/pages" },
+     { name: "Purchase Order", icon:ShoppingCart, path: "/features/purchase-order/pages" },
     { name: "Invoices", icon: Receipt, path: "/features/invoice/pages" },
     { name: "Payments", icon: CreditCard, path: "/features/payment/pages" },
     { name: "Projects", icon: FolderKanban, path: "/features/projects/pages" },
+   
   ];
 
   return (

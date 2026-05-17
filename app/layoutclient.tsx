@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import Sidebar from "./features/components/sideBar";
 import { useState } from "react";
+import { MessageCircle} from "lucide-react";
+import MessagesBar from "./features/components/messagesBar";
 
 
 export default function LayoutClient({
@@ -27,6 +29,7 @@ export default function LayoutClient({
     );
   }
   const [open, setOpen] = useState(true);
+  const [openMsg,setOpenMsg]=useState(false);
   // ✅ DASHBOARD
   return (
    <div className="flex">
@@ -40,6 +43,13 @@ export default function LayoutClient({
         <Sidebar open={open} setOpen={setOpen} />
       </div>
 
+      <div
+        className={`fixed right-0 top-0 h-screen z-50 transition-all duration-300 ${
+          open ? "w-64" : "w-20"
+        }`}
+      >
+        <MessagesBar open={openMsg} setOpen={setOpenMsg} />
+      </div>
       {/* ✅ Content dynamique */}
       <div
         className={`flex-1 transition-all duration-300 ${
@@ -48,6 +58,7 @@ export default function LayoutClient({
       >
         <main className="p-6 min-h-screen">
           {children}
+
         </main>
       </div>
     </div>
