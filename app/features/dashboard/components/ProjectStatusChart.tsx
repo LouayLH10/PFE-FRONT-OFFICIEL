@@ -9,29 +9,37 @@ import {
   Legend,
 } from "recharts";
 
-type InvoiceStatusChartProps = {
-  paid: number;
-  unpaid: number;
+type ProjectStatusChartProps = {
+  completed: number;
+  active: number;
+  pending: number;
 };
 
-export default function InvoiceStatusChart({
-  paid,
-  unpaid,
-}: InvoiceStatusChartProps) {
+export default function ProjectStatusChart({
+  completed,
+  active,
+  pending,
+}: ProjectStatusChartProps) {
   const data = [
     {
-      name: "Paid",
-      value: paid,
+      name: "Completed",
+      value: completed,
       color: "#22C55E",
     },
     {
-      name: "Unpaid",
-      value: unpaid,
-      color: "#EF4444",
+      name: "In Progress",
+      value: active,
+      color: "#3B82F6",
+    },
+    {
+      name: "Pending",
+      value: pending,
+      color: "#F59E0B",
     },
   ];
 
-  const total = paid + unpaid;
+  const total =
+    completed + active + pending;
 
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
@@ -40,11 +48,11 @@ export default function InvoiceStatusChart({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-800">
-            Invoice Status
+            Project Status
           </h2>
 
           <p className="text-sm text-gray-500">
-            Paid vs Unpaid invoices
+            Distribution of projects
           </p>
         </div>
       </div>
@@ -75,6 +83,7 @@ export default function InvoiceStatusChart({
             </Pie>
 
             <Tooltip />
+
             <Legend
               verticalAlign="bottom"
               height={36}
@@ -85,25 +94,35 @@ export default function InvoiceStatusChart({
       </div>
 
       {/* FOOTER */}
-      <div className="grid grid-cols-3 gap-4 mt-2">
+      <div className="grid grid-cols-4 gap-4 mt-2">
 
         <div className="bg-green-50 rounded-2xl p-3 text-center">
           <p className="text-green-600 text-sm">
-            Paid
+            Completed
           </p>
 
           <p className="font-bold text-xl">
-            {paid}
+            {completed}
           </p>
         </div>
 
-        <div className="bg-red-50 rounded-2xl p-3 text-center">
-          <p className="text-red-600 text-sm">
-            Unpaid
+        <div className="bg-blue-50 rounded-2xl p-3 text-center">
+          <p className="text-blue-600 text-sm">
+            Active
           </p>
 
           <p className="font-bold text-xl">
-            {unpaid}
+            {active}
+          </p>
+        </div>
+
+        <div className="bg-amber-50 rounded-2xl p-3 text-center">
+          <p className="text-amber-600 text-sm">
+            Pending
+          </p>
+
+          <p className="font-bold text-xl">
+            {pending}
           </p>
         </div>
 

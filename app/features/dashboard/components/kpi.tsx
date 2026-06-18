@@ -6,7 +6,7 @@ import { TrendingUp } from "lucide-react";
 interface KPIProps {
   title: string;
   number: string | number;
-  growth: string;
+  growth?: string;
   icon: React.ReactNode;
   color: string;
   href?: string;

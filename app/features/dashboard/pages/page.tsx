@@ -8,13 +8,10 @@ import InvoiceStatusChart from '../components/invoiceStatusChart'
 import OrderStatusChart from '../components/orderStatusChart'
 import PurchasedProductsChart from '../components/purchasedProductChart'
 import { getUserFromToken } from '../../auth/pages/login/user'
-import { fetchInvoice } from '../../invoice/service/invoiceService';
-import { fetchQuote } from '../../quotes/service/quoteService';
-import { fetchDN } from '../../delivery-note/service/deliveryNoteService';
-import { fetchPO } from '../../purchase-order/service/purchaseOrderService';
-import { fetchPayment } from '../../payment/service/paymentService';
-import { fetchProject } from '../../projects/service/projectService';
-import { generateDashboardPdf, sendDashboardEmail } from '../service/dashboardService';
+
+import { fetchDashboard, generateDashboardPdf, sendDashboardEmail } from '../service/dashboardService';
+import AiRiskChart from '../components/AiRiskChart';
+import ProjectStatusChart from '../components/ProjectStatusChart';
 
 function page() {
 const [nbQuote, setNbQuote] = useState(0);
@@ -55,6 +52,8 @@ const [purchacedProd, setPurchacedProd] = useState({
 });
 const [subject, setSubject] = useState("");
 const [message, setMessage] = useState("");
+const [dashboard, setDashboard] =
+  useState<any>(null);
 const [isPdfMode, setIsPdfMode] =
   useState(false);
 const [openShareModal, setOpenShareModal] =
@@ -109,143 +108,19 @@ useEffect(() => {
   const loadData = async () => {
     if (!user?.sub) return;
 
-  const quotes = (
-  await fetchQuote(user.sub)
-).filter(
-  (q: any) =>
-    new Date(q.createdAt).getFullYear() ===
-    selectedYear
-);
-
-const dn = (
-  await fetchDN(user.sub)
-).filter(
-  (d: any) =>
-    new Date(d.createdAt).getFullYear() ===
-    selectedYear
-);
-
-const order = (
-  await fetchPO(user.sub)
-).filter(
-  (o: any) =>
-    new Date(o.orderDate).getFullYear() ===
-    selectedYear
-);
-
-const invoice = (
-  await fetchInvoice(user.sub)
-).filter(
-  (i: any) =>
-    new Date(
-      i.invoiceDate || i.createdAt
-    ).getFullYear() === selectedYear
-);
-
-const payment = (
-  await fetchPayment(user.sub)
-).filter(
-  (p: any) =>
-    new Date(
-      p.paymentDate || p.createdAt
-    ).getFullYear() === selectedYear
-);
-
-const project = (
-  await fetchProject(user.sub)
-).filter(
-  (p: any) =>
-    new Date(p.createdAt).getFullYear() ===
-    selectedYear
-);
-    setNbQuote(quotes.length);
-    setNbDn(dn.length);
-    setNbOrder(order.length);
-    setNbInvoice(invoice.length);
-    setNbPayment(payment.length);
-    setNbProject(project.length);
-
-    setInvoiceStats({
-      paid: invoice.filter(
-        (i: any) => i.status === "PAID"
-      ).length,
-
-      sent: invoice.filter(
-        (i: any) => i.status === "SENT"
-      ).length,
-
-      cancelled: invoice.filter(
-        (i: any) => i.status === "CANCELLED"
-      ).length,
-
-      draft: invoice.filter(
-        (i: any) => i.status === "DRAFT"
-      ).length,
-    });
-
-    setOrderStats({
-      approved: order.filter(
-        (i: any) => i.status === "APPROVED"
-      ).length,
-
-      pending: order.filter(
-        (i: any) => i.status === "PENDING"
-      ).length,
-
-      cancelled: order.filter(
-        (i: any) => i.status === "CANCELLED"
-      ).length,
-
-       recieved: order.filter(
-        (i: any) => i.status === "RECEIVED"
-      ).length,
-    });
-
-    // Purchased Products by Month
-    const months = Array(12).fill(0);
-
-    order.forEach((po: any) => {
-      const month = new Date(
-        po.orderDate
-      ).getMonth();
-
-      const totalQty = po.items.reduce(
-        (sum: number, item: any) =>
-          sum + item.quantity,
-        0
-      );
-
-      months[month] += totalQty;
-    });
-
-
-    setPurchacedProd({
-      jan: months[0],
-      feb: months[1],
-      mar: months[2],
-      apr: months[3],
-      may: months[4],
-      jun: months[5],
-      jul: months[6],
-      aug: months[7],
-      sep: months[8],
-      oct: months[9],
-      nov: months[10],
-      dec: months[11],
-    });
-        let sum=0
-        let due=0
-payment.forEach((pay:any)=>{
-   sum+=pay.amount
-   due+=pay.invoice.balanceDue
-})
-setAmount(sum)
-setDueBalance(due)
-console.log(due)
-
+    try {
+      const data =
+        await fetchDashboard(user.sub);
+console.log(data)
+      setDashboard(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   loadData();
-},  [user?.sub, selectedYear]);
+}, [user?.sub]);
+
   return (
 <div
   ref={dashboardRef}
@@ -309,153 +184,194 @@ console.log(due)
         
   </div>
 
-  {/* KPI SECTION */}
- <div
+{/* KPI SECTION */}
+<div
   className={
     isPdfMode
       ? "grid grid-cols-3 gap-5"
       : "flex gap-6 overflow-x-auto pb-2 scrollbar-hide"
   }
 >
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Projects"
-        number={nbProject}
-        growth="+5.2%"
-        href="/features/projects/pages"
-        icon={
-          <FolderKanban
-            size={22}
-            className="text-blue-600"
-          />
-        }
-        color="bg-blue-100"
-      />
-    </div>
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Quotes"
-        number={nbQuote}
-        growth="+12%"
-         href="/features/quotes/pages"
-        icon={
-          <FileText
-            size={22}
-            className="text-purple-600"
-          />
-        }
-        color="bg-purple-100"
-      />
-    </div>
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Orders"
-        number={nbOrder}
-        growth="+15%"
-        href="/features/purchase-order/pages"
-        icon={
-          <ShoppingCart
-            size={22}
-            className="text-orange-600"
-          />
-        }
-        color="bg-orange-100"
-      />
-    </div>
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Qty Delivered / Ordered"
-        number={`${nbDn} / ${nbOrder}`}
-        growth="84%"
-         href="/features/delivery-note/pages"
-        icon={
-          <Truck
-            size={22}
-            className="text-green-600"
-          />
-        }
-        color="bg-green-100"
-      />
-    </div>
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Invoice Paid / Total"
-        number={`${nbPyament} / ${nbInvoice}`}
-        growth="74%"
-        href="/features/payment/pages"
-        icon={
-          <Receipt
-            size={22}
-            className="text-pink-600"
-          />
-        }
-        color="bg-pink-100"
-      />
-    </div>
-
-    <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Amount Paid"
-        number={`${amount} TND`}
-        growth="+8.7%"
-        icon={
-          <CreditCard
-            size={22}
-            className="text-emerald-600"
-          />
-        }
-        color="bg-emerald-100"
-      />
-    </div>
-   <div className="min-w-[260px] flex-shrink-0">
-      <KPI
-        title="Due Balance"
-        number={`${balance} TND`}
-        growth="+8.7%"
-        icon={
-          <CreditCard
-            size={22}
-            className="text-emerald-600"
-          />
-        }
-        color="bg-emerald-100"
-      />
-    </div>
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Projects"
+      number={
+        dashboard?.projects?.totalProjects || 0
+      }
+      href="/features/projects/pages"
+      icon={
+        <FolderKanban
+          size={22}
+          className="text-blue-600"
+        />
+      }
+      color="bg-blue-100"
+    />
   </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Purchase Orders"
+      number={
+        dashboard?.logistics
+          ?.purchaseOrders || 0
+      }
+      href="/features/purchase-order/pages"
+      icon={
+        <ShoppingCart
+          size={22}
+          className="text-orange-600"
+        />
+      }
+      color="bg-orange-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Delivery Notes"
+      number={
+        dashboard?.logistics
+          ?.deliveryNotes || 0
+      }
+      href="/features/delivery-note/pages"
+      icon={
+        <Truck
+          size={22}
+          className="text-green-600"
+        />
+      }
+      color="bg-green-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Revenue"
+      number={`${
+        dashboard?.finance
+          ?.totalRevenue || 0
+      } TND`}
+      icon={
+        <CreditCard
+          size={22}
+          className="text-emerald-600"
+        />
+      }
+      color="bg-emerald-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Paid Amount"
+      number={`${
+        dashboard?.finance
+          ?.totalPaid || 0
+      } TND`}
+      icon={
+        <Receipt
+          size={22}
+          className="text-green-600"
+        />
+      }
+      color="bg-green-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="Unpaid Amount"
+      number={`${
+        dashboard?.finance
+          ?.totalUnpaid || 0
+      } TND`}
+      icon={
+        <Receipt
+          size={22}
+          className="text-red-600"
+        />
+      }
+      color="bg-red-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="OCR Documents"
+      number={
+        dashboard?.ocr
+          ?.totalDocuments || 0
+      }
+      icon={
+        <FileText
+          size={22}
+          className="text-purple-600"
+        />
+      }
+      color="bg-purple-100"
+    />
+  </div>
+
+  <div className="min-w-[260px] flex-shrink-0">
+    <KPI
+      title="AI High Risk"
+      number={
+        dashboard?.ai?.highRisk || 0
+      }
+      icon={
+        <PieChart
+          size={22}
+          className="text-red-600"
+        />
+      }
+      color="bg-red-100"
+    />
+  </div>
+</div>
 
   {/* MAIN CONTENT */}
 {isPdfMode ? (
   <>
-    {/* Charts côte à côte */}
     <div className="grid grid-cols-2 gap-5">
+
       <InvoiceStatusChart
-        sent={invoiceStats.sent}
-        draft={invoiceStats.draft}
-        cancelled={invoiceStats.cancelled}
-        paid={invoiceStats.paid}
+        paid={
+          dashboard?.finance?.paidInvoices || 0
+        }
+        unpaid={
+          dashboard?.finance?.unpaidInvoices || 0
+        }
       />
 
-      <OrderStatusChart
-        approved={orderStats.approved}
-        cancelled={orderStats.cancelled}
-        recieved={orderStats.recieved}
-        pending={orderStats.pending}
+      <ProjectStatusChart
+        completed={
+          dashboard?.projects?.completedProjects || 0
+        }
+        active={
+          dashboard?.projects?.activeProjects || 0
+        }
+        pending={
+          dashboard?.projects?.pendingProjects || 0
+        }
       />
+
     </div>
 
-    {/* Purchased Products en dessous */}
     <div className="mt-5">
-      <PurchasedProductsChart
-        purchacedProd={purchacedProd}
+      <AiRiskChart
+        high={
+          dashboard?.ai?.highRisk || 0
+        }
+        medium={
+          dashboard?.ai?.mediumRisk || 0
+        }
+        low={
+          dashboard?.ai?.lowRisk || 0
+        }
       />
     </div>
 
-    {/* Activities + Reminders en dessous */}
     <div className="grid grid-cols-2 gap-5 mt-5">
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
         <UpcomingActivity />
@@ -467,40 +383,53 @@ console.log(due)
 ) : (
   <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-    {/* LEFT SIDE */}
     <div className="xl:col-span-2 space-y-6">
 
       <div className="flex flex-col xl:flex-row gap-6">
 
         <div className="flex-1">
           <InvoiceStatusChart
-            sent={invoiceStats.sent}
-            draft={invoiceStats.draft}
-            cancelled={invoiceStats.cancelled}
-            paid={invoiceStats.paid}
+            paid={
+              dashboard?.finance?.paidInvoices || 0
+            }
+            unpaid={
+              dashboard?.finance?.unpaidInvoices || 0
+            }
           />
         </div>
 
         <div className="flex-1">
-          <OrderStatusChart
-            approved={orderStats.approved}
-            cancelled={orderStats.cancelled}
-            recieved={orderStats.recieved}
-            pending={orderStats.pending}
+          <ProjectStatusChart
+            completed={
+              dashboard?.projects?.completedProjects || 0
+            }
+            active={
+              dashboard?.projects?.activeProjects || 0
+            }
+            pending={
+              dashboard?.projects?.pendingProjects || 0
+            }
           />
         </div>
 
       </div>
 
       <div className="mt-6">
-        <PurchasedProductsChart
-          purchacedProd={purchacedProd}
+        <AiRiskChart
+          high={
+            dashboard?.ai?.highRisk || 0
+          }
+          medium={
+            dashboard?.ai?.mediumRisk || 0
+          }
+          low={
+            dashboard?.ai?.lowRisk || 0
+          }
         />
       </div>
 
     </div>
 
-    {/* RIGHT SIDE */}
     <div className="space-y-6">
 
       <div className="overflow-y-auto h-137 bg-white rounded-3xl shadow-sm border border-gray-100">

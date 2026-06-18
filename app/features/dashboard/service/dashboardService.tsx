@@ -85,4 +85,14 @@ export const sendDashboardEmail = async (
     );
     throw error;
   }
+
+};
+  export const fetchDashboard = async (
+  userId: number,
+) => {
+  const response = await api.get(
+    `/bi/dashboard/${userId}`,
+  );
+
+  return response.data;
 };
