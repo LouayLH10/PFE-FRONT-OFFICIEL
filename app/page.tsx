@@ -11,7 +11,7 @@ if(!user){
 router.push('/features/auth/pages/login');
 }
 else{
-  router.push('/features/quotes/pages')
+  router.push('/features/dashboard/pages')
 }
   }, []);
   return (

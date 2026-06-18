@@ -53,10 +53,10 @@ function Page() {
 
   // ✅ filter
   const filteredInvoice = invoice.filter((d) =>
-    d.reference.toLowerCase().includes(query.toLowerCase()) ||
-    d.email.toLowerCase().includes(query.toLowerCase()) ||
-    d.name.toLowerCase().includes(query.toLowerCase()) ||
-    d.total.toString().includes(query)
+    d.reference?.toLowerCase().includes(query.toLowerCase()) ||
+    d.email?.toLowerCase().includes(query.toLowerCase()) ||
+    d.name?.toLowerCase().includes(query.toLowerCase()) ||
+    d.total?.toString().includes(query)
   );
 
   // ✅ AUTH + FETCH
@@ -122,7 +122,7 @@ function Page() {
   if (!isAuthChecked) return null;
 
   return (
-<div className="p-6 mt-5 ">      <h1 className="text-2xl font-bold mb-6">List of Invoice</h1>
+<div className="p-6 mt-5 ">     
 
       <SearchBar
         value={query}
@@ -134,90 +134,158 @@ function Page() {
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="overflow-x-auto bg-white shadow rounded-2xl">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-3 text-left">Reference</th>
-                <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Website</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Amount</th>
-                <th className="px-4 py-3 text-left">TVA (%)</th>
-                <th className="px-4 py-3 text-left">Total</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Created At</th>
-                <th className="px-4 py-3 text-left">Action</th>
-              </tr>
-            </thead>
+  <div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-200">
 
-            <tbody>
-              {filteredInvoice.length === 0 ? (
-                <tr>
-                  <td colSpan={10} className="text-center py-4 text-gray-500">
-                    No results found
-                  </td>
-                </tr>
-              ) : (
-                filteredInvoice.map((d) => {
-                  const statusObj = Status(d.status);
+  <table className="min-w-full text-sm text-gray-700">
+    
+    {/* HEADER */}
+    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+      <tr>
+        <th className="px-6 py-5 text-left font-semibold">Reference</th>
+        <th className="px-6 py-5 text-left font-semibold">Email</th>
+        <th className="px-6 py-5 text-left font-semibold">Website</th>
+        <th className="px-6 py-5 text-left font-semibold">Description</th>
+        <th className="px-6 py-5 text-left font-semibold">Amount</th>
+        <th className="px-6 py-5 text-left font-semibold">TVA</th>
+        <th className="px-6 py-5 text-left font-semibold">Total</th>
+        <th className="px-6 py-5 text-left font-semibold">Status</th>
+        <th className="px-6 py-5 text-left font-semibold">Created At</th>
+        <th className="px-6 py-5 text-left font-semibold">Action</th>
+      </tr>
+    </thead>
 
-                  return (
-                    <tr key={d.id} className="border-t hover:bg-gray-50">
-                      <td className="px-4 py-3">
-                        <b>{d.reference}</b>
-                      </td>
+    {/* BODY */}
+    <tbody className="divide-y divide-gray-100">
 
-                      <td className="px-4 py-3">{d.contact?.user?.email}</td>
+      {filteredInvoice.length === 0 ? (
+        <tr>
+          <td
+            colSpan={10}
+            className="text-center py-10 text-gray-400"
+          >
+            No results found
+          </td>
+        </tr>
+      ) : (
+        filteredInvoice.map((d, index) => {
+          const statusObj = Status(d.status);
 
-                      <td className="px-4 py-3">
-                        <a
-                          href={d.webSite}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          Visit
-                        </a>
-                      </td>
+          return (
+            <tr
+              key={d.id}
+              className={`transition hover:bg-gray-50 ${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
+              }`}
+            >
+              {/* REFERENCE */}
+              <td className="px-6 py-5 font-semibold text-gray-900">
+                {d.reference}
+              </td>
 
-                      <td className="px-4 py-3">{d.name}</td>
-                      <td className="px-4 py-3">{d.subTotal} TND</td>
-                      <td className="px-4 py-3"><b>{d.tva*100}%</b></td>
-                      <td className="px-4 py-3 font-semibold">
-                        {d.total} TND
-                      </td>
+              {/* EMAIL */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {d.contact?.user?.email}
+                  </span>
 
-                      <td className="px-4 py-3">
-                        <div className={statusObj.style}>
-                          {statusObj.state}
-                        </div>
-                      </td>
+                  <span className="text-xs text-gray-400">
+                    Client Email
+                  </span>
+                </div>
+              </td>
 
-                      <td className="px-4 py-3">
-                        {formatDate(d.createdAt)}
-                      </td>
+              {/* WEBSITE */}
+              <td className="px-6 py-5">
+                <a
+                  href={d.webSite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 font-medium hover:underline"
+                >
+                  Visit
+                </a>
+              </td>
 
-                      <td className="px-4 py-3">
-                        <button
-                          disabled={d.status !== "SENT" && d.status !== "PAID"}
-                          onClick={() => downloadInvoice(d.id)}
-                          className={`px-4 py-2 rounded-lg text-white transition ${
-                            d.status === "SENT" || d.status === "PAID"
-                              ? "bg-green-600 hover:bg-green-700"
-                              : "bg-gray-400 cursor-not-allowed"
-                          }`}
-                        >
-                          Download
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+              {/* DESCRIPTION */}
+              <td className="px-6 py-5">
+                <div className="max-w-[250px]">
+                  <p className="font-medium text-gray-800">
+                    {d.name}
+                  </p>
+
+                  <p className="text-xs text-gray-400 mt-1">
+                    Invoice Description
+                  </p>
+                </div>
+              </td>
+
+              {/* AMOUNT */}
+              <td className="px-6 py-5 font-medium">
+                {d.subTotal} TND
+              </td>
+
+              {/* TVA */}
+              <td className="px-6 py-5">
+                <span className="font-semibold">
+                  {d.tva * 100}%
+                </span>
+              </td>
+
+              {/* TOTAL */}
+              <td className="px-6 py-5">
+                <span className="font-bold text-gray-900">
+                  {d.total} TND
+                </span>
+              </td>
+
+              {/* STATUS */}
+              <td className="px-6 py-5">
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusObj.style}`}
+                >
+                  {statusObj.state}
+                </div>
+              </td>
+
+              {/* DATE */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {formatDate(d.createdAt)}
+                  </span>
+
+                  <span className="text-xs text-gray-400">
+                    Created Date
+                  </span>
+                </div>
+              </td>
+
+              {/* ACTION */}
+              <td className="px-6 py-5">
+                <button
+                  disabled={
+                    d.status !== "SENT" &&
+                    d.status !== "PAID"
+                  }
+                  onClick={() => downloadInvoice(d.id)}
+                  className={`px-5 py-2 rounded-xl text-sm font-medium text-white transition ${
+                    d.status === "SENT" ||
+                    d.status === "PAID"
+                      ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  Download
+                </button>
+              </td>
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
       )}
     </div>
   );

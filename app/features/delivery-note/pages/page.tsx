@@ -120,7 +120,7 @@ const Status = (status: string) => {
 
   return (
     <div className="p-6 mt-5">
-      <h1 className="text-2xl font-bold mb-6">List of Delivery Notes </h1>
+    
 
       <SearchBar
         value={query}
@@ -132,85 +132,181 @@ const Status = (status: string) => {
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="overflow-x-auto bg-white shadow rounded-2xl">
-          <table className="min-w-full text-sm">
-<thead className="bg-gray-100">
-  <tr>
-    <th className="px-4 py-3 text-left">Reference</th>
-    <th className="px-4 py-3 text-left">Client</th>
-    <th className="px-4 py-3 text-left">Email</th>
-    <th className="px-4 py-3 text-left">Location</th>
-    <th className="px-4 py-3 text-left">Delivery Date</th>
-    <th className="px-4 py-3 text-left">Items</th>
-    <th className="px-4 py-3 text-left">Status</th>
-    <th className="px-4 py-3 text-left">Created At</th>
-    <th className="px-4 py-3 text-left">Action</th>
-  </tr>
-</thead>
+<div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-200">
 
-<tbody>
-  {filteredDN.length === 0 ? (
-    <tr>
-      <td colSpan={9} className="text-center py-4 text-gray-500">
-        No results found
-      </td>
-    </tr>
-  ) : (
-    filteredDN.map((dn) => {
-      const statusObj = Status(dn.status);
+  <table className="min-w-full text-sm text-gray-700">
 
-      return (
-        <tr key={dn.id} className="border-t hover:bg-gray-50">
+    {/* HEADER */}
+    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+      <tr>
+        <th className="px-6 py-5 text-left font-semibold">
+          Reference
+        </th>
 
-          <td className="px-4 py-3">
-            <b>{dn.reference}</b>
+        <th className="px-6 py-5 text-left font-semibold">
+          Client
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Email
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Location
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Delivery Date
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Items
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Status
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Created At
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Action
+        </th>
+      </tr>
+    </thead>
+
+    {/* BODY */}
+    <tbody className="divide-y divide-gray-100">
+
+      {filteredDN.length === 0 ? (
+        <tr>
+          <td
+            colSpan={9}
+            className="text-center py-10 text-gray-400"
+          >
+            No results found
           </td>
-
-          <td className="px-4 py-3">
-            {dn.contact?.user?.name || "-"}
-          </td>
-
-          <td className="px-4 py-3">
-            {dn.contact?.user?.email || "-"}
-          </td>
-
-          <td className="px-4 py-3">{dn.location}</td>
-
-          <td className="px-4 py-3">
-            {formatDate(dn.deliveryDate)}
-          </td>
-
-          {/* ✅ nombre de lignes */}
-          <td className="px-4 py-3">
-            {dn.items?.length || 0} items
-          </td>
-
-          <td className="px-4 py-3">
-            <div className={statusObj.style}>
-              {statusObj.state}
-            </div>
-          </td>
-
-          <td className="px-4 py-3">
-            {formatDate(dn.createdAt)}
-          </td>
-
-          <td className="px-4 py-3">
-            <button
-              onClick={() => downloadDN(dn.id)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-            >
-              Download
-            </button>
-          </td>
-
         </tr>
-      );
-    })
-  )}
-</tbody>
-          </table>
-        </div>
+      ) : (
+        filteredDN.map((dn, index) => {
+          const statusObj = Status(dn.status);
+
+          return (
+            <tr
+              key={dn.id}
+              className={`transition hover:bg-gray-50 ${
+                index % 2 === 0
+                  ? "bg-white"
+                  : "bg-gray-50/50"
+              }`}
+            >
+
+              {/* REFERENCE */}
+              <td className="px-6 py-5 font-semibold text-gray-900">
+                {dn.reference}
+              </td>
+
+              {/* CLIENT */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {dn.contact?.user?.name || "-"}
+                  </span>
+
+                  <span className="text-xs text-gray-400">
+                    Client Name
+                  </span>
+                </div>
+              </td>
+
+              {/* EMAIL */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {dn.contact?.user?.email || "-"}
+                  </span>
+
+                  <span className="text-xs text-gray-400">
+                    Contact Email
+                  </span>
+                </div>
+              </td>
+
+              {/* LOCATION */}
+              <td className="px-6 py-5">
+                <div className="max-w-[220px]">
+                  <p className="font-medium text-gray-800">
+                    {dn.location}
+                  </p>
+
+                  <p className="text-xs text-gray-400 mt-1">
+                    Delivery Location
+                  </p>
+                </div>
+              </td>
+
+              {/* DELIVERY DATE */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {formatDate(dn.deliveryDate)}
+                  </span>
+
+                  <span className="text-xs text-gray-400">
+                    Scheduled Delivery
+                  </span>
+                </div>
+              </td>
+
+              {/* ITEMS */}
+              <td className="px-6 py-5">
+                <span className="font-semibold">
+                  {dn.items?.length || 0} items
+                </span>
+              </td>
+
+              {/* STATUS */}
+              <td className="px-6 py-5">
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusObj.style}`}
+                >
+                  {statusObj.state}
+                </div>
+              </td>
+
+              {/* CREATED */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {formatDate(dn.createdAt)}
+                  </span>
+
+                  <span className="text-xs text-gray-400">
+                    Created Date
+                  </span>
+                </div>
+              </td>
+
+              {/* ACTION */}
+              <td className="px-6 py-5">
+                <button
+                  onClick={() => downloadDN(dn.id)}
+                  className="px-5 py-2 rounded-xl text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition shadow-sm"
+                >
+                  Download
+                </button>
+              </td>
+
+            </tr>
+          );
+        })
+      )}
+
+    </tbody>
+  </table>
+</div>
       )}
     </div>
   );

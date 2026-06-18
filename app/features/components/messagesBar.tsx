@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, MessageCircle, SendIcon } from "lucide-react";
+import { ArrowBigLeftDash, ArrowLeft, ArrowLeftCircle, ArrowLeftFromLine, ArrowRight, MessageCircle, SendIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import SearchBar from "./searchBar";
 import { getUserFromToken } from "../auth/pages/login/user";
@@ -20,7 +20,7 @@ lastMessage:{
 },
 conversation:[
   {
-    id:number,content:String,senderId:number,recieverId:number,fileUrl:String
+    id:number,content:String,senderId:number,recieverId:number,fileUrl:String,dateSent:Date
   }
 ]
 };
@@ -53,6 +53,16 @@ const [selectedContact, setSelectedContact] = useState<User | null>(null);
 const [sentMessage,setSentMessage]=useState("");
 const [selectedFile, setSelectedFile] = useState<File | null>(null);
 const [dragActive, setDragActive] = useState(false);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  };
 useEffect(() => {
 
 socket.on("newMessage", (message) => {
@@ -409,14 +419,7 @@ const handleDragLeave = () => {
         {/* Title */}
         <div className="mb-6">
           <h1 className="text-xl font-bold text-blue-600">Messages</h1>
-          {selectedContact && (
-  <button
-    onClick={() => setSelectedContact(null)}
-    className="text-sm text-gray-500 mb-2"
-  >
-    ← Back
-  </button>
-)}
+ 
         </div>
 
         {/* Search */}
@@ -424,6 +427,12 @@ const handleDragLeave = () => {
 <div className={`mb-6 flex items-center gap-3 ${selectedContact? "p-4 bg-blue-200 rounded-xl":""}`} >
   {selectedContact ? (
     <>
+      <button
+    onClick={() => setSelectedContact(null)}
+    className="text-sm text-blue-500 mb-2 transition-all duration-300 mr-5   cursor-pointer hover:text-white"
+  >
+    <ArrowLeft size={30}/>
+  </button>
       {/* Avatar */}
       <div
         className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-bold  ${getColorFromName(selectedContact.user.name)}`}
@@ -552,8 +561,8 @@ const handleDragLeave = () => {
     }`}
   >
     {/* Messages */}
-<div className="flex-1  space-y-3 pr-2 pb-24 ">
-  <div className="overflow-y-auto  h-110">
+<div className="flex-1  space-y-3 pr-2 pb-24  ">
+  <div className="overflow-y-auto  h-150  ">
   {selectedContact?.conversation.map((message, index) => (
     <div
       key={index}
@@ -582,8 +591,11 @@ const handleDragLeave = () => {
   )}
 
 </div>
+  <p>{message?.dateSent}</p>
     </div>
+  
   ))}
+  
   </div>
 <div
   onDrop={handleDrop}

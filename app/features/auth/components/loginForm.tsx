@@ -26,7 +26,7 @@ export default function LoginForm() {
       console.log(user?.sub);   
       console.log(user?.email); 
       console.log(user?.name); 
-           router.push("/features/quotes/pages");
+           router.push("/features/dashboard/pages");
 
     } catch (err) {
       console.error(err);

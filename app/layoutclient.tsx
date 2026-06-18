@@ -5,6 +5,7 @@ import Sidebar from "./features/components/sideBar";
 import { useState } from "react";
 import { MessageCircle} from "lucide-react";
 import MessagesBar from "./features/components/messagesBar";
+import NavBar from "./features/components/navBar";
 
 
 export default function LayoutClient({
@@ -23,7 +24,7 @@ export default function LayoutClient({
   // ✅ 👉 SI AUTH → CENTER
   if (isAuthPage) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-200 w-full">
+      <div className="flex items-center justify-center  min-h-screen bg-gray-500 min-w-full">
         {children}
       </div>
     );
@@ -32,35 +33,45 @@ export default function LayoutClient({
   const [openMsg,setOpenMsg]=useState(false);
   // ✅ DASHBOARD
   return (
-   <div className="flex">
-      
-      {/* ✅ Sidebar FIXED */}
-      <div
-        className={`fixed left-0 top-0 h-screen z-50 transition-all duration-300 ${
-          open ? "w-64" : "w-20"
-        }`}
-      >
-        <Sidebar open={open} setOpen={setOpen} />
-      </div>
+<div className="min-h-full min-w-full bg-[#f5f7fb] flex">
 
-      <div
-        className={`fixed right-0 top-0 h-screen z-50 transition-all duration-300 ${
-          open ? "w-64" : "w-20"
-        }`}
-      >
-        <MessagesBar open={openMsg} setOpen={setOpenMsg} />
-      </div>
-      {/* ✅ Content dynamique */}
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          open ? "ml-64" : "ml-20"
-        }`}
-      >
-        <main className="p-6 min-h-screen">
-          {children}
+  {/* SIDEBAR */}
+  <aside
+    className={`fixed top-0 left-0 h-screen z-50 p-5 transition-all duration-300 ${
+      open ? "w-[320px]" : "w-[120px]"
+    }`}
+  >
+    <Sidebar
+      open={open}
+      setOpen={setOpen}
+    />
+  </aside>
 
-        </main>
-      </div>
+  {/* CONTENT */}
+  <div
+    className={`flex flex-col transition-all duration-300 min-h-screen ${
+      open
+        ? "ml-[320px] w-[calc(100%-320px)]"
+        : "ml-[120px] w-[calc(100%-120px)]"
+    }`}
+  >
+
+    {/* NAVBAR */}
+    <div className="p-5 pb-0">
+      <NavBar />
     </div>
+
+    {/* PAGE */}
+    <main className="flex-1 p-5 pt-5 overflow-hidden">
+
+      <div className="h-[calc(100vh-170px)] bg-white rounded-[35px] shadow-xl border border-gray-100 overflow-y-auto p-6">
+
+        {children}
+
+      </div>
+
+    </main>
+  </div>
+</div>
   );
 }

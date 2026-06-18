@@ -148,7 +148,6 @@ const filteredPayment = payment.filter((d) =>
 
   return (
 <div className="w-full p-1 mt-5 ">
-        <h1 className="text-2xl font-bold mb-6">List of Payment</h1>
 
       <SearchBar
         value={query}
@@ -160,79 +159,114 @@ const filteredPayment = payment.filter((d) =>
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="overflow-x-auto bg-white shadow rounded-2xl">
-<table className="min-w-full text-sm">
-  <thead className="bg-gray-100">
-    <tr>
-      <th className="px-4 py-3 text-left">Reference</th>
-      <th className="px-4 py-3 text-left">Amount</th>
-      <th className="px-4 py-3 text-left">Invoice</th>
-      <th className="px-4 py-3 text-left">Payment Date</th>
-      <th className="px-4 py-3 text-left">Status</th>
-      <th className="px-4 py-3 text-left">Action</th>
-    </tr>
-  </thead>
+<div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-100">
+  <table className="min-w-full text-sm text-gray-700">
 
-  <tbody>
-    {filteredPayment.length === 0 ? (
-      <tr>
-        <td colSpan={7} className="text-center py-4 text-gray-500">
-          No results found
-        </td>
+    {/* HEADER */}
+    <thead className="bg-gray-50 border-b border-gray-200">
+      <tr className="text-gray-500 text-xs uppercase tracking-wider">
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Reference
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Amount
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Invoice
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Payment Date
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Status
+        </th>
+
+        <th className="px-6 py-5 text-left font-semibold">
+          Action
+        </th>
       </tr>
-    ) : (
-      filteredPayment.map((d) => {
-        const statusObj = Status(d.status);
+    </thead>
 
-        return (
-          <tr key={d.id} className="border-t hover:bg-gray-50">
+    {/* BODY */}
+    <tbody>
+      {filteredPayment.length === 0 ? (
+        <tr>
+          <td
+            colSpan={6}
+            className="text-center py-10 text-gray-400"
+          >
+            No results found
+          </td>
+        </tr>
+      ) : (
+        filteredPayment.map((d, index) => {
+          const statusObj = Status(d.status);
 
-            {/* ✅ PAYMENT ID / REF */}
-            <td className="px-4 py-3">
-              <b>PAY-{d.id}</b>
-            </td>
+          return (
+            <tr
+              key={d.id}
+              className={`border-b border-gray-100 transition hover:bg-gray-50 ${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50/40"
+              }`}
+            >
+              {/* Reference */}
+              <td className="px-6 py-5 font-semibold text-gray-800">
+                PAY-{d.id}
+              </td>
 
-   
+              {/* Amount */}
+              <td className="px-6 py-5">
+                <div className="font-bold text-gray-900">
+                  {d.amount} {d.invoice?.currency || "TND"}
+                </div>
+              </td>
 
-            {/* ✅ AMOUNT */}
-            <td className="px-4 py-3 font-semibold">
-              {d.amount} {d.invoice?.currency || "TND"}
-            </td>
+              {/* Invoice */}
+              <td className="px-6 py-5">
+                <span className="font-medium text-gray-700">
+                  {d.invoice?.reference || "-"}
+                </span>
+              </td>
 
-            {/* ✅ INVOICE REF */}
-            <td className="px-4 py-3">
-              {d.invoice?.reference || "-"}
-            </td>
+              {/* Payment Date */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {formatDate(d.paymentDate)}
+                  </span>
+                </div>
+              </td>
 
-            {/* ✅ PAYMENT DATE */}
-            <td className="px-4 py-3">
-              {formatDate(d.paymentDate)}
-            </td>
+              {/* Status */}
+              <td className="px-6 py-5">
+                <div
+                  className={`${statusObj.style} inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold`}
+                >
+                  {statusObj.state}
+                </div>
+              </td>
 
-            {/* ✅ STATUS */}
-            <td className="px-4 py-3">
-              <div className={statusObj.style}>
-                {statusObj.state}
-              </div>
-            </td>
-
-            {/* ✅ ACTION */}
-            <td className="px-4 py-3">
-              <button
-                onClick={() => downloadPayment(d.id)}
-                className="px-4 py-2 rounded-lg text-white bg-green-600 hover:bg-green-700"
-              >
-                Download
-              </button>
-            </td>
-
-          </tr>
-        );
-      })
-    )}
-  </tbody>
-</table>
-        </div>
+              {/* Action */}
+              <td className="px-6 py-5">
+                <button
+                  onClick={() => downloadPayment(d.id)}
+                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-sm transition"
+                >
+                  Download
+                </button>
+              </td>
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
       )}
     </div>
   );

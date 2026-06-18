@@ -122,7 +122,6 @@ const filteredQuote = quote.filter((d) =>
 
   return (
     <div className="p-6 mt-5">
-      <h1 className="text-2xl font-bold mb-6">List of Quote</h1>
 
       <SearchBar
         value={query}
@@ -134,105 +133,170 @@ const filteredQuote = quote.filter((d) =>
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
-        <div className="overflow-x-auto bg-white shadow rounded-2xl">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-3 text-left">Reference</th>
-                <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Website</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Amount</th>
-                <th className="px-4 py-3 text-left">TVA (%)</th>
-                <th className="px-4 py-3 text-left">Total</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Created At</th>
-                <th className="px-4 py-3 text-left">Action</th>
-              </tr>
-            </thead>
+<div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-100">
+  <table className="min-w-full text-sm text-gray-700">
+    
+    {/* HEADER */}
+    <thead className="bg-gray-50 border-b border-gray-200">
+      <tr className="text-gray-500 text-xs uppercase tracking-wider">
 
-<tbody>
-  {filteredQuote.length === 0 ? (
-    <tr>
-      <td colSpan={10} className="text-center py-4 text-gray-500">
-        No results found
-      </td>
-    </tr>
-  ) : (
-    filteredQuote.map((d) => {
-      const statusObj = Status(d.status);
+        <th className="px-6 py-5 text-left font-semibold">
+          Reference
+        </th>
 
-      return (
-        <tr key={d.id} className="border-t hover:bg-gray-50">
-          <td className="px-4 py-3">
-            <b>{d.reference}</b>
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Email
+        </th>
 
-          <td className="px-4 py-3">
-            {d.contact?.user?.email || d.email}
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Website
+        </th>
 
-          <td className="px-4 py-3">
-            {d.webSite ? (
-              <a
-                href={d.webSite}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Visit
-              </a>
-            ) : (
-              "-"
-            )}
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Description
+        </th>
 
-          {/* ✅ subject au lieu de name */}
-          <td className="px-4 py-3">{d.subject}</td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Amount
+        </th>
 
-          {/* ✅ amount */}
-          <td className="px-4 py-3">{d.amount} TND</td>
+        <th className="px-6 py-5 text-left font-semibold">
+          TVA
+        </th>
 
-          {/* ✅ TVA */}
-          <td className="px-4 py-3">
-            <b>{d.tva}%</b>
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Total
+        </th>
 
-          {/* ✅ totalAmount */}
-          <td className="px-4 py-3 font-semibold">
-            {d.totalAmount} TND
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Status
+        </th>
 
-          <td className="px-4 py-3">
-            <div className={statusObj.style}>
-              {statusObj.state}
-            </div>
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Created At
+        </th>
 
-          <td className="px-4 py-3">
-            {formatDate(d.createdAt)}
-          </td>
+        <th className="px-6 py-5 text-left font-semibold">
+          Action
+        </th>
+      </tr>
+    </thead>
 
-          <td className="px-4 py-3">
-            <button
-              disabled={d.status !== "READY"} // 🔥 logique quote
-              onClick={() => downloadQuote(d.id)}
-              className={`px-4 py-2 rounded-lg text-white transition ${
-                d.status === "READY"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Download
-            </button>
+    {/* BODY */}
+    <tbody>
+      {filteredQuote.length === 0 ? (
+        <tr>
+          <td
+            colSpan={10}
+            className="text-center py-10 text-gray-400"
+          >
+            No results found
           </td>
         </tr>
-      );
-    })
-  )}
-</tbody>
-          </table>
-        </div>
+      ) : (
+        filteredQuote.map((d, index) => {
+          const statusObj = Status(d.status);
+
+          return (
+            <tr
+              key={d.id}
+              className={`border-b border-gray-100 transition hover:bg-gray-50 ${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50/40"
+              }`}
+            >
+              {/* Reference */}
+              <td className="px-6 py-5 font-semibold text-gray-800">
+                {d.reference}
+              </td>
+
+              {/* Email */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {d.contact?.user?.email || d.email}
+                  </span>
+                </div>
+              </td>
+
+              {/* Website */}
+              <td className="px-6 py-5">
+                {d.webSite ? (
+                  <a
+                    href={d.webSite}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 font-medium hover:underline"
+                  >
+                    Visit
+                  </a>
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )}
+              </td>
+
+              {/* Description */}
+              <td className="px-6 py-5 max-w-[250px]">
+                <div className="font-medium text-gray-800">
+                  {d.subject}
+                </div>
+              </td>
+
+              {/* Amount */}
+              <td className="px-6 py-5 font-medium">
+                {d.amount} TND
+              </td>
+
+              {/* TVA */}
+              <td className="px-6 py-5">
+                <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">
+                  {d.tva}%
+                </span>
+              </td>
+
+              {/* Total */}
+              <td className="px-6 py-5 font-bold text-gray-900">
+                {d.totalAmount} TND
+              </td>
+
+              {/* Status */}
+              <td className="px-6 py-5">
+                <div
+                  className={`${statusObj.style} inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold`}
+                >
+                  {statusObj.state}
+                </div>
+              </td>
+
+              {/* Created */}
+              <td className="px-6 py-5">
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    {formatDate(d.createdAt)}
+                  </span>
+                </div>
+              </td>
+
+              {/* Action */}
+              <td className="px-6 py-5">
+                <button
+                  disabled={d.status !== "READY"}
+                  onClick={() => downloadQuote(d.id)}
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold text-white transition ${
+                    d.status === "READY"
+                      ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  Download
+                </button>
+              </td>
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
       )}
     </div>
   );
