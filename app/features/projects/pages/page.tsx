@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import SearchBar from "../../components/searchBar";
 import { downloadProject, fetchProject } from "../service/projectService";
 import { ChevronDown } from "lucide-react";
+import { analyseDocument, verifyExistence } from "../../iaDocument/service/aiOCRService";
+import { useTranslation } from "react-i18next";
+
 type Project = {
   id: number;
   title: string;
@@ -60,12 +63,57 @@ function Page() {
   const [error, setError] = useState("");
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [query, setQuery] = useState("");
+  const [analyzedDocuments, setAnalyzedDocuments] =
+    useState<Record<number, boolean>>({});
+useEffect(() => {
+  const loadAnalysisStatus = async () => {
+    const result: Record<number, boolean> = {};
 
+    for (const inv of project) {
+      result[inv.id] = await verifyExistence(
+        inv.id,
+        "project"
+      );
+    }
+
+    setAnalyzedDocuments(result);
+  };
+
+  if (project.length) {
+    loadAnalysisStatus();
+  }
+}, [project]);
   const router = useRouter();
+   const [loadingAnalysis, setLoadingAnalysis] =
+    useState(false);
 const [openRow, setOpenRow] = useState<number | null>(null);
 const [openPhaseRow, setOpenPhaseRow] = useState<number | null>(null);
 const [openPhases, setOpenPhases] = useState(false);
 const [openMilestones, setOpenMilestones] = useState(false);
+   const [userId, setUserId] = useState(0);
+const { t } = useTranslation("project");
+  const handleAnalyse = async (
+  id: number,
+
+) => {
+  try {
+    setLoadingAnalysis(true);
+
+    await analyseDocument(
+      id,
+      "project",
+      userId
+    );
+
+    router.push(
+      "/features/iaDocument/pages"
+    );
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoadingAnalysis(false);
+  }
+};
   // ✅ format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -101,7 +149,7 @@ const filteredProject = project.filter((d) =>
       router.push("/features/auth/pages/login");
       return;
     }
-
+setUserId(user.sub)
     setIsAuthChecked(true);
 
     const fetchDev = async () => {
@@ -129,69 +177,73 @@ const filteredProject = project.filter((d) =>
 
   // ✅ STATUS
   const Status = (status: string) => {
-    switch (status) {
-      case "DRAFT":
-        return {
-          state: "DRAFT",
-          style: "bg-yellow-500 text-white px-2 py-1 rounded",
-        };
-      case "SENT":
-        return {
-          state: "SENT",
-          style: "bg-blue-500 text-white px-2 py-1 rounded",
-        };
-      case "PAID":
-        return {
-          state: "PAID",
-          style: "bg-green-500 text-white px-2 py-1 rounded",
-        };
+ switch (status) {
+    case "IN_PROGRESS":
+      return {
+        state: t("phaseStatus.IN_PROGRESS").toUpperCase(),
+        style: "bg-yellow-500 text-white px-2 py-1 rounded",
+      };
+
+    case "PLANNED":
+      return {
+        state: t("Status.PLANNED").toUpperCase(),
+        style: "bg-blue-500 text-white px-2 py-1 rounded",
+      };
+
+    case "COMPLETED":
+      return {
+        state: t("Status.COMPLETED").toUpperCase(),
+        style: "bg-green-600 text-white px-2 py-1 rounded",
+      };
       default:
-        return {
-          state: status,
-          style: "bg-gray-400 text-white px-2 py-1 rounded",
-        };
-    }
+      return {
+        state: t("Status.COMPLETED").toUpperCase(),
+        style: "bg-gray-600 text-white px-2 py-1 rounded",
+      };
+  }
   };
-const phaseStatus= (status:String)=>{
-    switch (status) {
-      case "IN_PROGRESS":
-        return {
-          state: "IN PROGRESS",
-          style: "bg-yellow-500 text-white px-2 py-1 rounded",
-        };
-      case "PLANNED":
-        return {
-          state: "PLANNED",
-          style: "bg-blue-500 text-white px-2 py-1 rounded",
-        };
+const phaseStatus = (status: string) => {
+  switch (status) {
+    case "IN_PROGRESS":
+      return {
+        state: t("phaseStatus.IN_PROGRESS").toUpperCase(),
+        style: "bg-yellow-500 text-white px-2 py-1 rounded",
+      };
 
-      default:
-        return {
-          state: status,
-          style: "bg-green-600 text-white px-2 py-1 rounded",
-        };
-    }
-}
-const delivrableStatus= (status:String)=>{
-    switch (status) {
-      case "IN_PROGRESS":
-        return {
-          state: "IN PROGRESS",
-          style: "bg-yellow-500 text-white px-2 py-1 rounded",
-        };
-      case "PENDING":
-        return {
-          state: "PENDING",
-          style: "bg-blue-500 text-white px-2 py-1 rounded",
-        };
+    case "PLANNED":
+      return {
+        state: t("phaseStatus.PLANNED").toUpperCase(),
+        style: "bg-blue-500 text-white px-2 py-1 rounded",
+      };
 
-      default:
-        return {
-          state: status,
-          style: "bg-green-600 text-white px-2 py-1 rounded",
-        };
-    }
-}
+    default:
+      return {
+        state: t("phaseStatus.COMPLETED").toUpperCase(),
+        style: "bg-green-600 text-white px-2 py-1 rounded",
+      };
+  }
+};
+const delivrableStatus = (status: string) => {
+  switch (status) {
+    case "IN_PROGRESS":
+      return {
+        state: t("deliverableStatus.IN_PROGRESS").toUpperCase(),
+        style: "bg-yellow-500 text-white px-2 py-1 rounded",
+      };
+
+    case "PENDING":
+      return {
+        state: t("deliverableStatus.PENDING").toUpperCase(),
+        style: "bg-blue-500 text-white px-2 py-1 rounded",
+      };
+
+    default:
+      return {
+        state: t("deliverableStatus.COMPLETED").toUpperCase(),
+        style: "bg-green-600 text-white px-2 py-1 rounded",
+      };
+  }
+};
   if (!isAuthChecked) return null;
 
   return (
@@ -201,7 +253,7 @@ const delivrableStatus= (status:String)=>{
       <SearchBar
         value={query}
         onChange={setQuery}
-        placeholder="Search project..."
+       placeholder={t("search")}
       />
 
       {loading && <p>Loading...</p>}
@@ -212,46 +264,45 @@ const delivrableStatus= (status:String)=>{
   <table className="min-w-full text-sm text-gray-700">
 
     {/* HEADER */}
-    <thead className="bg-gray-50 border-b border-gray-200">
-      <tr className="text-gray-500 text-xs uppercase tracking-wider">
+  <thead className="bg-gray-50 border-b border-gray-200">
+  <tr className="text-gray-500 text-xs uppercase tracking-wider">
 
-        <th className="px-6 py-5 text-left font-semibold w-12"></th>
+    <th className="px-6 py-5 text-left font-semibold"></th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Title
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.title")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Client Email
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.clientEmail")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Description
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.description")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Start Date
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.startDate")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          End Date
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.endDate")}
+    </th>
 
- 
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.status")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Status
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.createdAt")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Created At
-        </th>
+    <th className="px-6 py-5 text-left font-semibold">
+      {t("table.action")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Action
-        </th>
-      </tr>
-    </thead>
+  </tr>
+</thead>
 
     {/* BODY */}
     <tbody>
@@ -267,7 +318,8 @@ const delivrableStatus= (status:String)=>{
       ) : (
         filteredProject.map((d, index) => {
           const statusObj = Status(d.status);
-
+  const isAnalyzed =
+  analyzedDocuments[d.id] ;
           return (
             <React.Fragment key={d.id}>
 
@@ -348,8 +400,28 @@ const delivrableStatus= (status:String)=>{
                     onClick={() => downloadProject(d.id)}
                     className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-sm transition"
                   >
-                    Download
+                   {t("buttons.download")}
                   </button>
+                  <button
+  disabled={
+    d.status === "CANCELLED" ||
+  isAnalyzed
+  }
+  onClick={() =>
+    handleAnalyse(d.id)
+  }
+  className={`px-5 ml-2 py-2 rounded-xl text-sm font-medium text-white transition ${
+    d.status !== "CANCELLED" &&
+    !isAnalyzed
+      ? "bg-yellow-600 hover:bg-yellow-700 shadow-sm"
+      : "bg-gray-300 cursor-not-allowed"
+  }`}
+>
+  {isAnalyzed
+    ? "Already Analysed"
+    : "Analyse with AI"}
+    
+</button>
                 </td>
               </tr>
 
@@ -447,7 +519,7 @@ const delivrableStatus= (status:String)=>{
                                 <div className="bg-blue-100 rounded-2xl p-5">
 
                                   <div className="text-lg font-bold text-blue-700 mb-4">
-                                    Deliverables
+                                   {t("details.deliverables")}
                                   </div>
 
                                   {phase.deliverables?.map(
@@ -500,7 +572,7 @@ const delivrableStatus= (status:String)=>{
                               : ""
                           }`}
                         />
-                        <span>Milestones</span>
+                        <span>{t("details.milestones")}</span>
                       </div>
 
                       <div
@@ -526,10 +598,7 @@ const delivrableStatus= (status:String)=>{
                                   </div>
 
                                   <div className="text-sm text-gray-500 mt-1">
-                                    Deadline:{" "}
-                                    {formatDateDeadline(
-                                      milestone.deadline
-                                    )}
+                             {t("details.deadline")}: {formatDateDeadline(milestone.deadline)}
                                   </div>
                                 </div>
 
@@ -557,6 +626,33 @@ const delivrableStatus= (status:String)=>{
   </table>
 </div>
       )}
+       { loadingAnalysis && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+
+      <div className="bg-white rounded-2xl p-8 w-[400px] text-center shadow-xl">
+
+        <div className="flex justify-center mb-5">
+
+          <div className="h-16 w-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
+
+        </div>
+
+        <h2 className="text-xl font-bold mb-2">
+          AI Analysis in Progress
+        </h2>
+
+        <p className="text-gray-600">
+          OCR extraction and AI insights
+          generation are currently running.
+          This operation can takes a few minutes
+          Please wait...
+        </p>
+
+      </div>
+
+    </div>
+  )
+}
     </div>
   );
 }

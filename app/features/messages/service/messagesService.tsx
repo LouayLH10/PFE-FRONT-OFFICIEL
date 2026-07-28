@@ -57,7 +57,7 @@ export const sendMessage = async ({
     }
 
     const res = await api.post(
-      "http://localhost:3200/message",
+      "/message",
       formData,
       {
         headers: {
@@ -79,97 +79,107 @@ export const sendMessage = async ({
     throw error;
   }
 };
-export const fetchContact = async (
-  userId: number
-) => {
+export const fetchContact = async (userId: number) => {
+  console.log(
+    "fetchContact called:",
+    userId,
+    new Date().toISOString()
+  );
 
   try {
+    const res = await api.get("/users");
 
-    const res = await api.get(
-      "http://localhost:3200/users"
-    );
+    console.log("Users response:", res.data);
+
+    if (!Array.isArray(res.data)) {
+      console.error(
+        "Expected array from /users but received:",
+        res.data
+      );
+      return [];
+    }
 
     const users = res.data.filter(
       (u: any) => u.id !== userId
     );
 
-    // 🔥 récupérer conversations
     const result = await Promise.all(
-
       users.map(async (u: any) => {
-
         try {
-
           const convRes = await api.get(
-            `http://localhost:3200/message/conversation?user1Id=${userId}&user2Id=${u.id}`
+            `/message/conversation?user1Id=${userId}&user2Id=${u.id}`
           );
 
+          console.log(
+            `Conversation with ${u.id}:`,
+            convRes.data
+          );
+
+          const conversation = Array.isArray(convRes.data)
+            ? convRes.data
+            : Array.isArray(convRes.data?.data)
+            ? convRes.data.data
+            : [];
+
           const last =
-            convRes.data[
-              convRes.data.length - 1
-            ];
+            conversation.length > 0
+              ? conversation[conversation.length - 1]
+              : null;
 
           return {
-
             user: u,
-
-            conversation: convRes.data,
-
+            conversation,
             lastMessage: last
               ? {
                   ...last,
-                  preview: last.content
-                    ? last.content
-                    : "Sent a file",
+                  preview:
+                    last.content || "Sent a file",
                 }
               : {
-                  preview:
-                    "No messages yet",
+                  preview: "No messages yet",
                 },
-
           };
-
-        } catch (err) {
+        } catch (err: any) {
+          console.error(
+            `Conversation error with user ${u.id}`
+          );
+          console.error("Message:", err.message);
+          console.error("Code:", err.code);
+          console.error("Status:", err.response?.status);
+          console.error("Response:", err.response?.data);
+          console.error("Config:", err.config);
 
           return {
-
             user: u,
-
             conversation: [],
-
             lastMessage: {
-              preview:
-                "No messages yet",
+              preview: "No messages yet",
             },
-
           };
-
         }
-
       })
-
     );
+
+    console.log("Contacts loaded:", result);
 
     return result;
-
-  } catch (error) {
-
-    console.error(
-      "Erreur fetch users:",
-      error
-    );
+  } catch (err: any) {
+    console.error("Fetch users error");
+    console.error("Message:", err.message);
+    console.error("Code:", err.code);
+    console.error("Status:", err.response?.status);
+    console.error("Response:", err.response?.data);
+    console.error("Config:", err.config);
 
     return [];
-
   }
-
 };
 export const deleteMessage = async (
   messageId: number
 ) => {
   try {
     const res = await api.delete(
-      `http://localhost:3200/message/${messageId}`
+      `/message/${messageId}`
     );
 
     return res.data;
@@ -180,4 +190,25 @@ export const deleteMessage = async (
     );
     throw error;
   }
+  
+};
+export const fetchUnreadCount = async (
+   userId:number
+)=>{
+console.log(userId);
+console.log(typeof userId);
+console.log(`/message/unread-count?userId=${userId}`);
+   const res = await api.get(
+      `/message/unread-count?userId=${userId}`
+   );
+
+   return res.data;
+}
+export  const  markConversationAsRead = async (
+  senderId: number,
+  receiverId: number
+) => {
+  await api.patch(
+    `/message/read?senderId=${senderId}&receiverId=${receiverId}`
+  );
 };

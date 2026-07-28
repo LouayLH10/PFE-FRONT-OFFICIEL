@@ -1,0 +1,52 @@
+{
+  "table": {
+    "title": "Titre",
+    "clientEmail": "Email du client",
+    "description": "Description",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "status": "Statut",
+    "createdAt": "Créé le",
+    "action": "Action"
+  },
+  "mobile": {
+    "start": "Début",
+    "end": "Fin",
+    "created": "Créé",
+    "details": "Détails",
+    "phases": "Phases",
+    "milestones": "Jalons"
+  },
+  "details": {
+    "phases": "Phases",
+    "deliverables": "Livrables",
+    "milestones": "Jalons",
+    "deadline": "Échéance"
+  },
+  "buttons": {
+    "download": "Télécharger"
+  },
+  "Status": {
+   "PLANNED": "Planifiée",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminée"
+  },
+  "phaseStatus": {
+    "PLANNED": "Planifiée",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminée"
+  },
+  "deliverableStatus": {
+    "PENDING": "En attente",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminée"
+  },
+  "messages": {
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "error": "Erreur lors du chargement des projets"
+  },
+  "search": {
+    "placeholder": "Rechercher un projet..."
+  }
+}

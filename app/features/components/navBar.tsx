@@ -1,137 +1,74 @@
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  Bell,
-  MessageCircle,
-  Search,
-} from "lucide-react";
-
+import React from "react";
+import { Search, Timer } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { getUserFromToken } from "../auth/pages/login/user";
+import LanguageSwitcher from "./languageSwitcher";
+import { useTranslation } from "react-i18next";
 
 function NavBar() {
+  const { t } = useTranslation("navbar");
+  const pathname = usePathname();
 
-  const pathname =
-    usePathname();
-
-  const [pageName, setPageName] =
-    useState("");
-const user=getUserFromToken();
   const menuItems = [
-
     {
-      name: "Dashboard",
+      name: t("pages.dashboard"),
       path: "/features/dashboard/pages",
     },
-
     {
-      name: "Quotes",
+      name: t("pages.quotes"),
       path: "/features/quotes/pages",
     },
-
     {
-      name: "Delivery Notes",
+      name: t("pages.deliveryNotes"),
       path: "/features/delivery-note/pages",
     },
-
     {
-      name: "Purchase Order",
+      name: t("pages.orders"),
       path: "/features/purchase-order/pages",
     },
-
     {
-      name: "Invoices",
+      name: t("pages.invoices"),
       path: "/features/invoice/pages",
     },
-
     {
-      name: "Payments",
+      name: t("pages.payments"),
       path: "/features/payment/pages",
     },
-
     {
-      name: "Projects",
+      name: t("pages.projects"),
       path: "/features/projects/pages",
     },
-
     {
-      name: "Messages",
+      name: t("pages.messages"),
       path: "/features/messages/pages",
+    },
+       {
+      name: t("pages.aidocumentsinsights"),
+      path: "/features/iaDocument/pages",
     },
   ];
 
-  useEffect(() => {
+  const pageName =
+    menuItems.find((item) => item.path === pathname)?.name ?? "";
 
-    const currentItem =
-      menuItems.find(
-        (item) =>
-          pathname === item.path
-      );
-
-    if (currentItem) {
-
-      setPageName(
-        currentItem.name
-      );
-
-    }
-
-  }, [pathname]);
-  const getColorFromName = (
-    name: string
-  ) => {
-      if (!name) {
-    return "bg-gray-500";
-  }
-    const colors = [
-      "bg-red-500",
-      "bg-blue-500",
-      "bg-green-500",
-      "bg-yellow-500",
-      "bg-purple-500",
-      "bg-pink-500",
-      "bg-indigo-500",
-    ];
-
-    let hash = 0;
-
-    for (let i = 0; i < name.length; i++) {
-      hash =
-        name.charCodeAt(i) +
-        ((hash << 5) - hash);
-    }
-
-    return (
-      colors[Math.abs(hash) % colors.length]
-    );
-  };
   return (
-
-    <nav className="w-full bg-white rounded-[30px] shadow-xl border border-gray-100 px-8 py-5">
-
-      <div className="flex items-center justify-between">
+    <nav className="w-full bg-white rounded-2xl md:rounded-[30px] shadow-xl border border-gray-100 px-4 md:px-8 py-4 md:py-5">
+      <div className="flex items-center justify-between gap-4">
 
         {/* LEFT */}
-        <div>
-
-          <p className="text-sm text-gray-400 font-medium">
-            Welcome Back 
+        <div className="min-w-0">
+          <p className="text-xs md:text-sm text-gray-400 font-medium">
+            {t("welcome")}
           </p>
 
-          <h1 className="text-3xl font-bold text-gray-900 mt-1">
+          <h1 className="text-xl md:text-3xl font-bold text-gray-900 truncate">
             {pageName}
           </h1>
-
         </div>
 
-        {/* CENTER SEARCH */}
+        {/* SEARCH */}
         <div className="hidden lg:flex items-center bg-[#f5f5f7] rounded-2xl px-4 py-3 w-[350px]">
-
           <Search
             size={18}
             className="text-gray-400"
@@ -139,60 +76,25 @@ const user=getUserFromToken();
 
           <input
             type="text"
-            placeholder="Search..."
+            placeholder={t("search")}
             className="bg-transparent outline-none ml-3 w-full text-sm text-gray-700 placeholder:text-gray-400"
           />
-
         </div>
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-4">
+        {/* RIGHT */}
+        <div className="flex items-center gap-2 md:gap-4">
 
-          {/* MESSAGE */}
-          <a
-            href="/features/messages/pages"
-            className="relative w-14 h-14 rounded-2xl bg-[#f5f5f7] hover:bg-[#edeaff] flex items-center justify-center text-gray-600 hover:text-[#6C4DFF] transition-all duration-300"
-          >
+          <LanguageSwitcher />
 
-            <MessageCircle size={22} />
+          <button className="relative w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#f5f5f7] hover:bg-[#edeaff] flex items-center justify-center text-gray-600 hover:text-[#6C4DFF] transition">
+            <Timer
+              size={18}
+              className="md:w-[22px] md:h-[22px]"
+            />
 
-            {/* BADGE */}
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#6C4DFF]" />
-
-          </a>
-
-          {/* NOTIFICATION */}
-          <button
-            className="relative w-14 h-14 rounded-2xl bg-[#f5f5f7] hover:bg-[#edeaff] flex items-center justify-center text-gray-600 hover:text-[#6C4DFF] transition-all duration-300"
-          >
-
-            <Bell size={22} />
-
-            {/* BADGE */}
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-pink-500" />
-
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500" />
           </button>
 
-          {/* USER */}
-          <div className="flex items-center gap-3 pl-2">
-
-            <div className="text-right hidden sm:block">
-
-              <p className="font-semibold text-gray-800 leading-none">
-                {user?.name}
-              </p>
-
-
-
-            </div>
-
-            {/* AVATAR */}
-            <div className={`w-14 h-14 rounded-2xl bg-[#6C4DFF] text-white ${getColorFromName(user?.name)} flex items-center justify-center font-bold text-lg shadow-md `}>
-
-           {user?.name.charAt(0).toUpperCase()}
-
-            </div>
-          </div>
         </div>
       </div>
     </nav>

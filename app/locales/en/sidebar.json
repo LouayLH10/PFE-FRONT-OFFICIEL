@@ -1,0 +1,21 @@
+{
+  "appName": "MyApp",
+  "navigation": "Navigation",
+
+  "menu": {
+    "dashboard": "Dashboard",
+    "quotes": "Quotes",
+    "orders": "Orders",
+    "deliveryNotes": "Delivery Notes",
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "projects": "Projects",
+    "messages": "Messages",
+   "aidocumentsinsights":"AI Documents Insights"
+  },
+
+  "user": {
+    "unknown": "Unknown User",
+    "noEmail": "No email"
+  }
+}

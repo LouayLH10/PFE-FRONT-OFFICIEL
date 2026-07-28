@@ -1,0 +1,42 @@
+{
+  "search": {
+    "placeholder": "Rechercher une livraison..."
+  },
+
+  "table": {
+    "reference": "Référence",
+    "client": "Client",
+    "email": "E-mail",
+    "location": "Lieu",
+    "deliveryDate": "Date de livraison",
+    "items": "Articles",
+    "status": "Statut",
+    "created": "Créé le",
+    "action": "Action"
+  },
+
+  "status": {
+    "PENDING": "EN ATTENTE",
+    "DELIVERED": "LIVRÉE",
+      "SHIPPED":"expédié"
+  },
+
+  "buttons": {
+    "download": "Télécharger"
+  },
+
+  "messages": {
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "fetchError": "Erreur lors du chargement des bons de livraison."
+  },
+
+  "mobile": {
+    "client": "Client",
+    "email": "E-mail",
+    "location": "Lieu",
+    "deliveryDate": "Date de livraison",
+    "items": "Articles",
+    "created": "Créé le"
+  }
+}

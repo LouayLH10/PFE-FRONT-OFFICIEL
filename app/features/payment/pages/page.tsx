@@ -1,11 +1,13 @@
 "use client";
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { getUserFromToken } from "../../auth/pages/login/user";
 import { useRouter } from "next/navigation";
 import SearchBar from "../../components/searchBar";
 import { downloadPayment, fetchPayment } from "../service/paymentService";
+import { formatDate, formatTND } from "../../services/generalFunctions";
+import { useTranslation } from "react-i18next";
 type Payment = {
   id: number;
   amount: number;
@@ -59,20 +61,11 @@ function Page() {
   const [error, setError] = useState("");
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [query, setQuery] = useState("");
-
+const { t } = useTranslation("payment");
   const router = useRouter();
 
   // ✅ format date
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")} ${String(
-      date.getHours()
-    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  };
+ 
 
   // ✅ filter
 const filteredPayment = payment.filter((d) =>
@@ -119,30 +112,21 @@ const filteredPayment = payment.filter((d) =>
 
 
   // ✅ STATUS
-  const Status = (status: string) => {
-    switch (status) {
-      case "DRAFT":
-        return {
-          state: "DRAFT",
-          style: "bg-yellow-500 text-white px-2 py-1 rounded",
-        };
-      case "SENT":
-        return {
-          state: "SENT",
-          style: "bg-blue-500 text-white px-2 py-1 rounded",
-        };
-      case "PAID":
-        return {
-          state: "PAID",
-          style: "bg-green-500 text-white px-2 py-1 rounded",
-        };
-      default:
-        return {
-          state: status,
-          style: "bg-gray-400 text-white px-2 py-1 rounded",
-        };
-    }
-  };
+const Status = (status: string) => {
+  switch (status) {
+    case "SUCCESS":
+      return {
+        state: t("status.success").toUpperCase(),
+        style: "bg-green-500 text-white px-2 py-1 rounded",
+      };
+
+    default:
+      return {
+        state: status.toUpperCase(),
+        style: "bg-gray-400 text-white px-2 py-1 rounded",
+      };
+  }
+};
 
   if (!isAuthChecked) return null;
 
@@ -152,122 +136,194 @@ const filteredPayment = payment.filter((d) =>
       <SearchBar
         value={query}
         onChange={setQuery}
-        placeholder="Search payment..."
+placeholder={t("search")}
       />
 
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {!loading && !error && (
-<div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-100">
-  <table className="min-w-full text-sm text-gray-700">
+{!loading && !error && (
+  <>
+    {/* ================= DESKTOP ================= */}
+    <div className="hidden lg:block overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-100">
+      <table className="min-w-full text-sm text-gray-700">
 
-    {/* HEADER */}
-    <thead className="bg-gray-50 border-b border-gray-200">
-      <tr className="text-gray-500 text-xs uppercase tracking-wider">
+<thead className="bg-gray-50 border-b border-gray-200">
+  <tr className="text-gray-500 text-xs uppercase tracking-wider">
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Reference
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.reference")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Amount
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.amount")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Invoice
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.invoice")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Payment Date
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.paymentDate")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Status
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.status")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Action
-        </th>
-      </tr>
-    </thead>
+    <th className="px-6 py-5 text-left">
+      {t("table.action")}
+    </th>
 
-    {/* BODY */}
-    <tbody>
-      {filteredPayment.length === 0 ? (
-        <tr>
-          <td
-            colSpan={6}
-            className="text-center py-10 text-gray-400"
-          >
-            No results found
-          </td>
-        </tr>
-      ) : (
-        filteredPayment.map((d, index) => {
-          const statusObj = Status(d.status);
+  </tr>
+</thead>
 
-          return (
-            <tr
-              key={d.id}
-              className={`border-b border-gray-100 transition hover:bg-gray-50 ${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50/40"
-              }`}
-            >
-              {/* Reference */}
-              <td className="px-6 py-5 font-semibold text-gray-800">
-                PAY-{d.id}
-              </td>
-
-              {/* Amount */}
-              <td className="px-6 py-5">
-                <div className="font-bold text-gray-900">
-                  {d.amount} {d.invoice?.currency || "TND"}
-                </div>
-              </td>
-
-              {/* Invoice */}
-              <td className="px-6 py-5">
-                <span className="font-medium text-gray-700">
-                  {d.invoice?.reference || "-"}
-                </span>
-              </td>
-
-              {/* Payment Date */}
-              <td className="px-6 py-5">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {formatDate(d.paymentDate)}
-                  </span>
-                </div>
-              </td>
-
-              {/* Status */}
-              <td className="px-6 py-5">
-                <div
-                  className={`${statusObj.style} inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold`}
-                >
-                  {statusObj.state}
-                </div>
-              </td>
-
-              {/* Action */}
-              <td className="px-6 py-5">
-                <button
-                  onClick={() => downloadPayment(d.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-700 shadow-sm transition"
-                >
-                  Download
-                </button>
+        <tbody>
+          {filteredPayment.length === 0 ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="text-center py-10 text-gray-400"
+              >
+                No results found
               </td>
             </tr>
-          );
-        })
-      )}
-    </tbody>
-  </table>
+          ) : (
+            filteredPayment.map((d, index) => {
+              const statusObj = Status(d.status);
+
+              return (
+                <tr
+                  key={d.id}
+                  className={`border-b border-gray-100 hover:bg-gray-50 ${
+                    index % 2 === 0
+                      ? "bg-white"
+                      : "bg-gray-50/40"
+                  }`}
+                >
+                  <td className="px-6 py-5 font-semibold">
+                    PAY-{d.id}
+                  </td>
+
+                  <td className="px-6 py-5 font-bold">
+                    {formatTND(d.amount)}
+                
+                  </td>
+
+                  <td className="px-6 py-5">
+                    {d.invoice?.reference || "-"}
+                  </td>
+
+                  <td className="px-6 py-5">
+                    {formatDate(d.paymentDate)}
+                  </td>
+
+                  <td className="px-6 py-5">
+                    <span
+                      className={`${statusObj.style} px-3 py-1 rounded-full text-xs`}
+                    >
+                      {statusObj.state}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-5">
+                    <button
+                      onClick={() =>
+                        downloadPayment(d.id)
+                      }
+                      className="px-5 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white"
+                    >
+                     {t("buttons.download")}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+
+      </table>
+    </div>
+
+    {/* ================= MOBILE ================= */}
+<div className="lg:hidden space-y-4">
+
+  {filteredPayment.length === 0 ? (
+
+    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center text-gray-400">
+      {t("messages.noResults")}
+    </div>
+
+  ) : (
+
+    filteredPayment.map((d) => {
+
+      const statusObj = Status(d.status);
+
+      return (
+
+        <div
+          key={d.id}
+          className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5"
+        >
+
+          <div className="flex justify-between items-center">
+
+            <h3 className="font-bold text-lg">
+              PAY-{d.id}
+            </h3>
+
+            <span
+              className={`${statusObj.style} px-3 py-1 rounded-full text-xs`}
+            >
+              {statusObj.state}
+            </span>
+
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm">
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.amount")}:
+              </span>{" "}
+              {formatTND(d.amount)}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.invoice")}:
+              </span>{" "}
+              {d.invoice?.reference || "-"}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.paymentDate")}:
+              </span>{" "}
+              {formatDate(d.paymentDate)}
+            </p>
+
+          </div>
+
+          <button
+            onClick={() => downloadPayment(d.id)}
+            className="w-full mt-5 py-3 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-semibold transition"
+          >
+            {t("buttons.download")}
+          </button>
+
+        </div>
+
+      );
+
+    })
+
+  )}
+
 </div>
-      )}
+  </>
+)}
     </div>
   );
 }

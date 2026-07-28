@@ -6,6 +6,7 @@ interface JwtUser {
   sub: number;
   email: string;
   name: string;
+  language:string;
 }
 
 export const getUserFromToken = (): JwtUser | null => {

@@ -1,0 +1,123 @@
+{
+  "title": "Tableau de bord",
+  "overview": "Vue d'ensemble des indicateurs de votre activité",
+
+  "kpi": {
+    "projects": "Projets",
+    "purchaseOrders": "Bons de commande",
+    "deliveryNotes": "Bons de livraison",
+    "revenue": "Chiffre d'affaires",
+    "paidAmount": "Montant payé",
+    "unpaidAmount": "Montant impayé",
+    "ocrDocuments": "Documents OCR",
+    "aiHighRisk": "Risque IA élevé"
+  },
+    "projectStatus": {
+    "title": "Statut des projets",
+    "subtitle": "Répartition des projets",
+    "completed": "Terminés",
+    "active": "En cours",
+    "pending": "En attente",
+    "total": "Total"
+  },
+  "orderChart": {
+    "title": "Commandes par statut",
+    "description": "Répartition des commandes",
+
+    "approved": "Approuvées",
+    "pending": "En attente",
+    "cancelled": "Annulées",
+    "received": "Reçues"
+  },  
+  "invoiceStatus": {
+    "title": "Statut des factures",
+    "subtitle": "Factures payées vs impayées",
+    "paid": "Payées",
+    "unpaid": "Impayées",
+    "total": "Total"
+  },
+  "reminders": {
+  "title": "Rappels",
+  "description": "Paiements et devis en retard",
+  "viewDetails": "Voir les détails",
+  "daysSuffix": "j",
+
+  "items": {
+    "invoice1Title": "Facture INV-2026-015",
+    "invoice1Subtitle": "Client : ABC Company",
+
+    "quoteTitle": "Devis QT-2026-009",
+    "quoteSubtitle": "En attente d'approbation",
+
+    "invoice2Title": "Facture INV-2026-022",
+    "invoice2Subtitle": "Client : TechCorp"
+  }
+},
+  "purchasedProducts": {
+    "title": "Produits achetés",
+    "description": "Produits achetés au cours de l'année",
+    "thisYear": "Cette année",
+    "lastYear": "L'année dernière",
+
+    "totalPurchased": "Total acheté",
+    "bestMonth": "Meilleur mois",
+    "averagePerMonth": "Moyenne / mois",
+
+    "months": {
+      "jan": "Jan",
+      "feb": "Fév",
+      "mar": "Mar",
+      "apr": "Avr",
+      "may": "Mai",
+      "jun": "Juin",
+      "jul": "Juil",
+      "aug": "Aoû",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Déc"
+    }
+  },
+  "upcomingActivity": {
+  "title": "Activités à venir",
+  "description": "Livrables, factures, commandes et devis",
+
+  "activities": {
+    "quoteWaitingApproval": "Devis en attente d'approbation",
+    "invoiceOverdue": "Facture en retard",
+    "purchaseOrderPending": "Bon de commande en attente de confirmation",
+    "deliveryScheduled": "Livraison planifiée",
+
+    "quoteDescription": "Devis n°QT-2026-001",
+    "invoiceDescription": "Facture n°INV-2026-015",
+    "orderDescription": "Commande n°SO-2026-021",
+    "deliveryDescription": "Projet Alpha",
+
+    "today": "Aujourd'hui",
+    "twoDaysAgo": "Il y a 2 jours",
+    "tomorrow": "Demain",
+    "nextWeek": "La semaine prochaine"
+  }
+},
+  "shareModal": {
+    "title": "Partager le rapport du tableau de bord",
+    "description": "Envoyez le rapport PDF généré par e-mail",
+    "recipientEmail": "E-mail du destinataire",
+    "emailSubject": "Objet de l'e-mail",
+    "message": "Écrivez votre message...",
+    "cancel": "Annuler",
+    "send": "Envoyer",
+    "sending": "Envoi en cours..."
+  },
+
+  "success": {
+    "title": "E-mail envoyé",
+    "description": "Le rapport du tableau de bord a été envoyé avec succès.",
+    "ok": "OK"
+  },
+
+  "error": {
+    "title": "Échec",
+    "ok": "OK"
+  }
+}

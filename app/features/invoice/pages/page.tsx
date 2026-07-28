@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 import SearchBar from "../../components/searchBar";
 import { fetchInvoice } from "../service/invoiceService";
 import { downloadInvoice } from "../service/invoiceService";
+import { analyseDocument, fetchOcrDocuments, verifyExistence } from "../../iaDocument/service/aiOCRService";
+import { useTranslation } from "react-i18next";
+import VoiceRecorder from "../../components/voiceRecorder";
+import EstimateInvoiceModal from "../../components/EstimateQuoteModal";
+import { Mic } from "lucide-react";
 
 type Invoice = {
   id: number;
@@ -36,9 +41,34 @@ function Page() {
   const [error, setError] = useState("");
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [query, setQuery] = useState("");
+   const [userId, setUserId] = useState(0);
+   const [processing, setProcessing] = useState(false);
+   const [missingProducts, setMissingProducts] = useState<string[]>([]);
+const [analyzedDocuments, setAnalyzedDocuments] =
+  useState<Record<number, boolean>>({});
+useEffect(() => {
+  const loadAnalysisStatus = async () => {
+    const result: Record<number, boolean> = {};
 
+    for (const inv of invoice) {
+      result[inv.id] = await verifyExistence(
+        inv.id,
+        "invoice"
+      );
+    }
+
+    setAnalyzedDocuments(result);
+  };
+
+  if (invoice.length) {
+    loadAnalysisStatus();
+  }
+}, [invoice]);
   const router = useRouter();
-
+  const { t } = useTranslation("invoice");
+ const [loadingAnalysis, setLoadingAnalysis] =
+  useState(false);
+const [openEstimateModal, setOpenEstimateModal] = useState(false);
   // ✅ format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -77,11 +107,12 @@ function Page() {
         // ❗ CORRECTION ICI
         const data = await fetchInvoice(user.sub);
 
-        setInvoice(data); // déjà tableau
+        setInvoice(data);
+        setUserId(user.sub) // déjà tableau
         setError("");
       } catch (err) {
         console.error(err);
-        setError("Erreur lors du chargement des invoice");
+setError(t("loadError"));
       } finally {
         setLoading(false);
       }
@@ -89,48 +120,73 @@ function Page() {
 
     fetchDev();
   }, [router]);
+  const handleAnalyse = async (
+  id: number,
 
+) => {
+  try {
+    setLoadingAnalysis(true);
+
+    await analyseDocument(
+      id,
+      "invoice",
+      userId
+    );
+
+    router.push(
+      "/features/iaDocument/pages"
+    );
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoadingAnalysis(false);
+  }
+};
   // ✅ DOWNLOAD
 
 
   // ✅ STATUS
-  const Status = (status: string) => {
-    switch (status) {
-      case "DRAFT":
-        return {
-          state: "DRAFT",
-          style: "bg-yellow-500 text-white px-2 py-1 rounded",
-        };
-      case "SENT":
-        return {
-          state: "SENT",
-          style: "bg-blue-500 text-white px-2 py-1 rounded",
-        };
-      case "PAID":
-        return {
-          state: "PAID",
-          style: "bg-green-500 text-white px-2 py-1 rounded",
-        };
-      default:
-        return {
-          state: status,
-          style: "bg-gray-400 text-white px-2 py-1 rounded",
-        };
-    }
-  };
+const Status = (status: string) => {
+  switch (status) {
+    case "DRAFT":
+      return {
+        state: t("statusDraft"),
+        style: "bg-yellow-500 text-white px-2 py-1 rounded",
+      };
+
+    case "SENT":
+      return {
+        state: t("statusSent"),
+        style: "bg-blue-500 text-white px-2 py-1 rounded",
+      };
+
+    case "PAID":
+      return {
+        state: t("statusPaid"),
+        style: "bg-green-500 text-white px-2 py-1 rounded",
+      };
+
+    case "CANCELLED":
+      return {
+        state: t("statusCancelled"),
+        style: "bg-red-500 text-white px-2 py-1 rounded",
+      };
+
+    default:
+      return {
+        state: status,
+        style: "bg-gray-400 text-white px-2 py-1 rounded",
+      };
+  }
+};
 
   if (!isAuthChecked) return null;
 
   return (
 <div className="p-6 mt-5 ">     
 
-      <SearchBar
-        value={query}
-        onChange={setQuery}
-        placeholder="Search invoice..."
-      />
 
-      {loading && <p>Loading...</p>}
+      {loading && <p>{t("loading")}</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
@@ -141,16 +197,16 @@ function Page() {
     {/* HEADER */}
     <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
       <tr>
-        <th className="px-6 py-5 text-left font-semibold">Reference</th>
-        <th className="px-6 py-5 text-left font-semibold">Email</th>
-        <th className="px-6 py-5 text-left font-semibold">Website</th>
-        <th className="px-6 py-5 text-left font-semibold">Description</th>
-        <th className="px-6 py-5 text-left font-semibold">Amount</th>
-        <th className="px-6 py-5 text-left font-semibold">TVA</th>
-        <th className="px-6 py-5 text-left font-semibold">Total</th>
-        <th className="px-6 py-5 text-left font-semibold">Status</th>
-        <th className="px-6 py-5 text-left font-semibold">Created At</th>
-        <th className="px-6 py-5 text-left font-semibold">Action</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("reference")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("email")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("website")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("description")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("amount")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("vat")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("total")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("status")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("createdAt")}</th>
+        <th className="px-6 py-5 text-left font-semibold">{t("action")}</th>
       </tr>
     </thead>
 
@@ -163,13 +219,14 @@ function Page() {
             colSpan={10}
             className="text-center py-10 text-gray-400"
           >
-            No results found
+           {t("noResults")}
           </td>
         </tr>
       ) : (
         filteredInvoice.map((d, index) => {
           const statusObj = Status(d.status);
-
+  const isAnalyzed =
+  analyzedDocuments[d.id] ;
           return (
             <tr
               key={d.id}
@@ -190,7 +247,7 @@ function Page() {
                   </span>
 
                   <span className="text-xs text-gray-400">
-                    Client Email
+{t("clientEmail")}
                   </span>
                 </div>
               </td>
@@ -203,8 +260,7 @@ function Page() {
                   rel="noopener noreferrer"
                   className="text-blue-600 font-medium hover:underline"
                 >
-                  Visit
-                </a>
+{t("visit")}                </a>
               </td>
 
               {/* DESCRIPTION */}
@@ -215,7 +271,7 @@ function Page() {
                   </p>
 
                   <p className="text-xs text-gray-400 mt-1">
-                    Invoice Description
+                   {t("invoiceDescription")}
                   </p>
                 </div>
               </td>
@@ -228,7 +284,7 @@ function Page() {
               {/* TVA */}
               <td className="px-6 py-5">
                 <span className="font-semibold">
-                  {d.tva * 100}%
+                  {d.tva }%
                 </span>
               </td>
 
@@ -256,9 +312,10 @@ function Page() {
                   </span>
 
                   <span className="text-xs text-gray-400">
-                    Created Date
+                    {t("createdDate")}
                   </span>
                 </div>
+                
               </td>
 
               {/* ACTION */}
@@ -276,8 +333,31 @@ function Page() {
                       : "bg-gray-300 cursor-not-allowed"
                   }`}
                 >
-                  Download
+                  {t("download")}
                 </button>
+                
+<button
+  disabled={
+    d.status === "CANCELLED" ||
+  isAnalyzed
+  }
+  onClick={() =>
+    handleAnalyse(d.id)
+  }
+  className={`px-5 ml-2 py-2 rounded-xl text-sm font-medium text-white transition ${
+    d.status !== "CANCELLED" &&
+    !isAnalyzed
+      ? "bg-yellow-600 hover:bg-yellow-700 shadow-sm"
+      : "bg-gray-300 cursor-not-allowed"
+  }`}
+>
+{
+  isAnalyzed
+    ? t("alreadyAnalysed")
+    : t("analyse")
+}
+    
+</button>
               </td>
             </tr>
           );
@@ -285,8 +365,34 @@ function Page() {
       )}
     </tbody>
   </table>
+  
 </div>
       )}
+      {
+  loadingAnalysis && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+
+      <div className="bg-white rounded-2xl p-8 w-[400px] text-center shadow-xl">
+
+        <div className="flex justify-center mb-5">
+
+          <div className="h-16 w-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
+
+        </div>
+
+        <h2 className="text-xl font-bold mb-2">
+         {t("analysisTitle")}
+        </h2>
+
+        <p className="text-gray-600">
+       {t("analysisDescription")}
+        </p>
+
+      </div>
+
+    </div>
+  )
+}
     </div>
   );
 }

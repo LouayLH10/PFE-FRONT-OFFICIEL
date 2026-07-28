@@ -1,0 +1,52 @@
+{
+  "table": {
+    "title": "Title",
+    "clientEmail": "Client Email",
+    "description": "Description",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Status",
+    "createdAt": "Created At",
+    "action": "Action"
+  },
+  "mobile": {
+    "start": "Start",
+    "end": "End",
+    "created": "Created",
+    "details": "Details",
+    "phases": "Phases",
+    "milestones": "Milestones"
+  },
+  "details": {
+    "phases": "Phases",
+    "deliverables": "Deliverables",
+    "milestones": "Milestones",
+    "deadline": "Deadline"
+  },
+  "buttons": {
+    "download": "Download"
+  },
+  "Status": {
+    "PLANNED": "Planned",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed"
+  },
+  "phaseStatus": {
+    "PLANNED": "Planned",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed"
+  },
+  "deliverableStatus": {
+    "PENDING": "Pending",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "error": "Error while loading projects"
+  },
+  "search": {
+    "placeholder": "Search project..."
+  }
+}

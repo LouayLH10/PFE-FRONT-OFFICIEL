@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 import Sidebar from "./features/components/sideBar";
 import { useState } from "react";
-import { MessageCircle} from "lucide-react";
-import MessagesBar from "./features/components/messagesBar";
+
 import NavBar from "./features/components/navBar";
+import "@/app/locales/i18n";
 
 
 export default function LayoutClient({

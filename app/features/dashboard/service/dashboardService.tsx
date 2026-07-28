@@ -2,31 +2,23 @@ import { api } from "@/app/api/api";
 import React from "react";
 
 export const generateDashboardPdf = async (
-  dashboardRef: React.RefObject<HTMLDivElement | null>,
-  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>,
-  setOpenShareModal: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsPdfMode: React.Dispatch<React.SetStateAction<boolean>>
+  userId: number,
+ year: number,
+  setPdfFile: React.Dispatch<
+    React.SetStateAction<File | null>
+  >,
+  setOpenShareModal: React.Dispatch<
+    React.SetStateAction<boolean>
+  >
 ) => {
   try {
-    if (!dashboardRef.current) return;
-
-    // Active le mode PDF
-    setIsPdfMode(true);
-
-    // Attend le rerender React
-    await new Promise((resolve) =>
-      setTimeout(resolve, 2000)
-    );
-
-    if (!dashboardRef.current) return;
-
-    const html = dashboardRef.current.outerHTML;
-
-    console.log("PDF HTML:", html);
 
     const response = await api.post(
       "/pdf/dashboard",
-      { html },
+      {
+        userId,
+        year,
+      },
       {
         responseType: "blob",
       }
@@ -34,22 +26,23 @@ export const generateDashboardPdf = async (
 
     const file = new File(
       [response.data],
-      "dashboard-report.pdf",
+      `dashboard-report-${year}.pdf`,
       {
         type: "application/pdf",
       }
     );
 
     setPdfFile(file);
+
     setOpenShareModal(true);
+
   } catch (error) {
+
     console.error(
       "PDF generation error:",
       error
     );
-  } finally {
-    // Toujours revenir au mode normal
-    setIsPdfMode(false);
+
   }
 };
 export const sendDashboardEmail = async (
@@ -95,4 +88,55 @@ export const sendDashboardEmail = async (
   );
 
   return response.data;
+};
+export const downloadDashboardPdf = async (
+  userId: number,
+  year: number,
+) => {
+ const language = localStorage.getItem("language") ;
+console.log(language)
+  try {
+
+    const response = await api.post(
+      "/pdf/download-dashboard",
+      {
+        userId,
+        year,
+        language
+      },
+      {
+        responseType: "blob",
+      }
+    );
+
+    const url =
+      window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+      `dashboard-${year}.pdf`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+
+    console.error(
+      "Download PDF error:",
+      error
+    );
+
+  }
+
 };

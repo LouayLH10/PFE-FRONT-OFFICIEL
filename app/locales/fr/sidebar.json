@@ -1,0 +1,21 @@
+{
+  "appName": "MonApp",
+  "navigation": "Navigation",
+
+  "menu": {
+    "dashboard": "Tableau de bord",
+    "quotes": "Devis",
+    "orders": "Commandes",
+    "deliveryNotes": "Bons de livraison",
+    "invoices": "Factures",
+    "payments": "Paiements",
+    "projects": "Projets",
+    "messages": "Messages",
+    "aidocumentsinsights":"Aperçus des documents par IA "
+  },
+
+  "user": {
+    "unknown": "Utilisateur inconnu",
+    "noEmail": "Aucun e-mail"
+  }
+}

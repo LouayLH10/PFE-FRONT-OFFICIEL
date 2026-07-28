@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState,useRef} from 'react'
 import KPI from '../components/kpi'
-import { CreditCard, FileText, FolderKanban, PieChart, Receipt, Share, Share2Icon, ShoppingCart, Truck } from 'lucide-react'
+import { CreditCard, Download, FileText, FolderKanban, PieChart, Receipt, Share, Share2Icon, ShoppingCart, Truck } from 'lucide-react'
 import UpcomingActivity from '../components/upcomingActivity'
 import Reminders from '../components/reminders'
 import InvoiceStatusChart from '../components/invoiceStatusChart'
@@ -9,9 +9,10 @@ import OrderStatusChart from '../components/orderStatusChart'
 import PurchasedProductsChart from '../components/purchasedProductChart'
 import { getUserFromToken } from '../../auth/pages/login/user'
 
-import { fetchDashboard, generateDashboardPdf, sendDashboardEmail } from '../service/dashboardService';
+import { downloadDashboardPdf, fetchDashboard, generateDashboardPdf, sendDashboardEmail } from '../service/dashboardService';
 import AiRiskChart from '../components/AiRiskChart';
 import ProjectStatusChart from '../components/ProjectStatusChart';
+import { useTranslation } from 'react-i18next';
 
 function page() {
 const [nbQuote, setNbQuote] = useState(0);
@@ -58,7 +59,7 @@ const [isPdfMode, setIsPdfMode] =
   useState(false);
 const [openShareModal, setOpenShareModal] =
   useState(false);
-
+const { t } = useTranslation("dashboard");
 const [pdfFile, setPdfFile] =
   useState<File | null>(null);
 
@@ -120,7 +121,6 @@ console.log(data)
 
   loadData();
 }, [user?.sub]);
-
   return (
 <div
   ref={dashboardRef}
@@ -135,13 +135,12 @@ console.log(data)
   <div className="flex justify-between items-center">
 
     <div>
-      <h1 className="text-3xl font-bold text-gray-800">
-        Dashboard
-       
+ <h1 className="text-2xl md:text-3xl font-bold">
+{t("title")}       
       </h1>
 
       <p className="text-gray-500">
-        Overview of your business metrics
+     {t("overview")}
       </p>
     </div>
     <div className='flex flex-col xl:flex-row gap-6'>
@@ -166,11 +165,12 @@ console.log(data)
         {!isPdfMode && (
   <button
     onClick={() =>
-    generateDashboardPdf(
-      dashboardRef,
+      generateDashboardPdf(
+     Number(user?.sub),
+2026,
       setPdfFile,
       setOpenShareModal,
-      setIsPdfMode
+   
     )
   }
     className="w-12 h-12 flex items-center justify-center bg-[#6C4DFF] text-white rounded-2xl shadow-lg hover:bg-[#5b3df0] transition"
@@ -179,7 +179,18 @@ console.log(data)
   </button>
 )}
 
-
+ <button
+    onClick={() =>
+    downloadDashboardPdf(
+     Number(user?.sub),
+2026
+   
+    )
+  }
+    className="w-12 h-12 flex items-center justify-center bg-[#6C4DFF] text-white rounded-2xl shadow-lg hover:bg-[#5b3df0] transition"
+  >
+    <Download size={20} />
+  </button>
     </div>
         
   </div>
@@ -193,140 +204,78 @@ console.log(data)
   }
 >
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Projects"
-      number={
-        dashboard?.projects?.totalProjects || 0
-      }
-      href="/features/projects/pages"
-      icon={
-        <FolderKanban
-          size={22}
-          className="text-blue-600"
-        />
-      }
-      color="bg-blue-100"
-    />
+<KPI
+  title={t("kpi.projects")}
+  number={dashboard?.projects?.totalProjects || 0}
+  href="/features/projects/pages"
+  icon={<FolderKanban size={22} className="text-blue-600" />}
+  color="bg-blue-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Purchase Orders"
-      number={
-        dashboard?.logistics
-          ?.purchaseOrders || 0
-      }
-      href="/features/purchase-order/pages"
-      icon={
-        <ShoppingCart
-          size={22}
-          className="text-orange-600"
-        />
-      }
-      color="bg-orange-100"
-    />
+<KPI
+  title={t("kpi.purchaseOrders")}
+  number={dashboard?.logistics?.purchaseOrders || 0}
+  href="/features/purchase-order/pages"
+  icon={<ShoppingCart size={22} className="text-orange-600" />}
+  color="bg-orange-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Delivery Notes"
-      number={
-        dashboard?.logistics
-          ?.deliveryNotes || 0
-      }
-      href="/features/delivery-note/pages"
-      icon={
-        <Truck
-          size={22}
-          className="text-green-600"
-        />
-      }
-      color="bg-green-100"
-    />
+ <KPI
+  title={t("kpi.deliveryNotes")}
+  number={dashboard?.logistics?.deliveryNotes || 0}
+  href="/features/delivery-note/pages"
+  icon={<Truck size={22} className="text-green-600" />}
+  color="bg-green-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Revenue"
-      number={`${
-        dashboard?.finance
-          ?.totalRevenue || 0
-      } TND`}
-      icon={
-        <CreditCard
-          size={22}
-          className="text-emerald-600"
-        />
-      }
-      color="bg-emerald-100"
-    />
+<KPI
+  title={t("kpi.revenue")}
+  number={`${dashboard?.finance?.totalRevenue || 0} TND`}
+  icon={<CreditCard size={22} className="text-emerald-600" />}
+  color="bg-emerald-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Paid Amount"
-      number={`${
-        dashboard?.finance
-          ?.totalPaid || 0
-      } TND`}
-      icon={
-        <Receipt
-          size={22}
-          className="text-green-600"
-        />
-      }
-      color="bg-green-100"
-    />
+<KPI
+  title={t("kpi.paidAmount")}
+  number={`${dashboard?.finance?.totalPaid || 0} TND`}
+  icon={<Receipt size={22} className="text-green-600" />}
+  color="bg-green-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="Unpaid Amount"
-      number={`${
-        dashboard?.finance
-          ?.totalUnpaid || 0
-      } TND`}
-      icon={
-        <Receipt
-          size={22}
-          className="text-red-600"
-        />
-      }
-      color="bg-red-100"
-    />
+<KPI
+  title={t("kpi.unpaidAmount")}
+  number={`${dashboard?.finance?.totalUnpaid || 0} TND`}
+  icon={<Receipt size={22} className="text-red-600" />}
+  color="bg-red-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="OCR Documents"
-      number={
-        dashboard?.ocr
-          ?.totalDocuments || 0
-      }
-      icon={
-        <FileText
-          size={22}
-          className="text-purple-600"
-        />
-      }
-      color="bg-purple-100"
-    />
+<KPI
+  title={t("kpi.ocrDocuments")}
+  number={dashboard?.ocr?.totalDocuments || 0}
+  icon={<FileText size={22} className="text-purple-600" />}
+  color="bg-purple-100"
+/>
   </div>
 
   <div className="min-w-[260px] flex-shrink-0">
-    <KPI
-      title="AI High Risk"
-      number={
-        dashboard?.ai?.highRisk || 0
-      }
-      icon={
-        <PieChart
-          size={22}
-          className="text-red-600"
-        />
-      }
-      color="bg-red-100"
-    />
+<KPI
+  title={t("kpi.aiHighRisk")}
+  number={dashboard?.ai?.highRisk || 0}
+  icon={<PieChart size={22} className="text-red-600" />}
+  color="bg-red-100"
+/>
   </div>
 </div>
 

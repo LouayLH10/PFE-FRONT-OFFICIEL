@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   MessageCircle,
+  Archive,
 } from "lucide-react";
 
 import { usePathname } from "next/navigation";
@@ -22,9 +23,15 @@ import { fetchPO } from "../purchase-order/service/purchaseOrderService";
 import { fetchInvoice } from "../invoice/service/invoiceService";
 import { fetchPayment } from "../payment/service/paymentService";
 import { fetchProject } from "../projects/service/projectService";
+import { useTranslation } from "react-i18next";
+import { fetchUnreadCount } from "../messages/service/messagesService";
+import { socket } from "@/app/socket";
+import { fetchOcrDocuments } from "../iaDocument/service/aiOCRService";
+import logo from "@/app/logo/innoway.png";
+  import Image from "next/image";
 
 function Sidebar({ open, setOpen }: any) {
-
+const { t } = useTranslation("sidebar");
   const pathname = usePathname();
 const [nbQuote, setNbQuote] = useState(0);
 const [nbDn, setNbDn] = useState(0);
@@ -32,8 +39,10 @@ const [nbOrder, setNbOrder] = useState(0);
 const [nbInvoice, setNbInvoice] = useState(0);
 const [nbPyament, setNbPayment] = useState(0);
 const [nbProject, setNbProject] = useState(0);
-const user = getUserFromToken();
+const [nbDoc, setNbDoc] = useState(0);
 
+const user = getUserFromToken();
+const [unreadMessages,setUnreadMessages]=useState(0);
 useEffect(() => {
 
   const loadQuotes = async () => {
@@ -46,85 +55,110 @@ const order=await fetchPO(user.sub)
 const invoice=await fetchInvoice(user.sub)
 const payment=await fetchPayment(user.sub)
 const project =await fetchProject(user.sub)
+const Doc =await fetchOcrDocuments(user.sub)
+
     setNbQuote(quotes.length);
     setNbDn(dn.length)
     setNbOrder(order.length)
     setNbInvoice(invoice.length)
     setNbPayment(payment.length)
     setNbProject(project.length)
+    setNbDoc(Doc.length)
     console.log(quotes);
 
   };
 
   loadQuotes();
 
+}, [user?.sub]);useEffect(() => {
+  if (!user?.sub) return;
+
+  const handleReceiveMessage = (message: any) => {
+    if (message.receiverId === user.sub) {
+      setUnreadMessages((prev) => prev + 1);
+    }
+  };
+
+socket.on("newMessage", handleReceiveMessage);
+  return () => {
+    socket.off("receiveMessage", handleReceiveMessage);
+  };
 }, [user?.sub]);
-  const menuItems = [
+useEffect(() => {
+  if (!user?.sub) return;
 
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: "/features/dashboard/pages",
-      badge: null,
-      color: "",
-    },
+  socket.connect();
+  socket.emit("join", user.sub);
 
-    {
-      name: "Quotes",
-      icon: FileText,
-      path: "/features/quotes/pages",
-      badge: nbQuote,
-      color: "bg-yellow-400",
+  return () => {
+    socket.disconnect();
+  };
+}, [user?.sub]);
+const menuItems = [
+  {
+    name: t("menu.dashboard"),
+    icon: LayoutDashboard,
+    path: "/features/dashboard/pages",
+    badge: null,
+    color: "",
+  },
+  {
+    name: t("menu.quotes"),
+    icon: FileText,
+    path: "/features/quotes/pages",
+    badge: nbQuote,
+    color: "bg-yellow-400",
+  },
+  {
+    name: t("menu.orders"),
+    icon: ShoppingCart,
+    path: "/features/purchase-order/pages",
+    badge: nbOrder,
+    color: "bg-orange-400",
+  },
+  {
+    name: t("menu.deliveryNotes"),
+    icon: Truck,
+    path: "/features/delivery-note/pages",
+    badge: nbDn,
+    color: "bg-teal-400",
+  },
+  {
+    name: t("menu.invoices"),
+    icon: Receipt,
+    path: "/features/invoice/pages",
+    badge: nbInvoice,
+    color: "bg-pink-500",
+  },
+  {
+    name: t("menu.payments"),
+    icon: CreditCard,
+    path: "/features/payment/pages",
+    badge: nbPyament,
+    color: "bg-red-500",
+  },
+  {
+    name: t("menu.projects"),
+    icon: FolderKanban,
+    path: "/features/projects/pages",
+    badge: nbProject,
+    color: "bg-blue-500",
+  },
+  {
+    name: t("menu.messages"),
+    icon: MessageCircle,
+    path: "/features/messages/pages",
+    badge: unreadMessages,
+    color: "bg-purple-500",
+  },
+        {
+      name: t("menu.aidocumentsinsights"),
+      icon: Archive,
+      path: "/features/iaDocument/pages",
+      badge: nbDoc,
+      color: "bg-yellow-500",
     },
-
-    {
-      name: "Delivery Notes",
-      icon: Truck,
-      path: "/features/delivery-note/pages",
-      badge: nbDn,
-      color: "bg-teal-400",
-    },
-
-    {
-      name: "Orders",
-      icon: ShoppingCart,
-      path: "/features/purchase-order/pages",
-      badge: nbOrder,
-      color: "bg-orange-400",
-    },
-
-    {
-      name: "Invoices",
-      icon: Receipt,
-      path: "/features/invoice/pages",
-      badge: nbInvoice,
-      color: "bg-pink-500",
-    },
-
-    {
-      name: "Payments",
-      icon: CreditCard,
-      path: "/features/payment/pages",
-      badge: nbPyament,
-      color: "bg-red-500",
-    },
-
-    {
-      name: "Projects",
-      icon: FolderKanban,
-      path: "/features/projects/pages",
-      badge: nbProject,
-      color: "bg-blue-500",
-    },
-
-    {
-      name: "Messages",
-      icon: MessageCircle,
-      path: "/features/messages/pages",
-      badge: "43",
-      color: "bg-purple-500",
-    },
-  ];
+];
   const getColorFromName = (
     name: string
   ) => {
@@ -168,14 +202,20 @@ const project =await fetchProject(user.sub)
       <div>
 
         {/* HEADER */}
-        <div className="flex items-center justify-between px-7 pt-8">
+        <div className="flex items-center justify-between px-5 pt-7">
 
           {/* LOGO */}
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+<h1 className="flex items-center  gap-2 text-2xl font-extrabold text-gray-900 tracking-tight">
+  <Image
+    src={logo}
+    alt="InnoCRM Logo"
+    width={60}
+    height={40}
+    priority
+  />
 
-            {open ? "MyApp" : "M"}
-
-          </h1>
+  {open && <span>InnoCRM</span> }
+</h1>
 
           {/* TOGGLE */}
           <button
@@ -191,7 +231,7 @@ const project =await fetchProject(user.sub)
         {/* TITLE */}
         {open && (
           <p className="text-[12px] font-bold text-gray-400 tracking-widest px-7 mt-10 mb-4 uppercase">
-            Navigation
+         {t("navigation")}
           </p>
         )}
 

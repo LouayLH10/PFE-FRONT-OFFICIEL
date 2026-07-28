@@ -1,0 +1,28 @@
+{
+  "search": "Rechercher un paiement...",
+  "loading": "Chargement...",
+  "noResults": "Aucun résultat trouvé",
+
+  "table": {
+    "reference": "Référence",
+    "amount": "Montant",
+    "invoice": "Facture",
+    "paymentDate": "Date de paiement",
+    "status": "Statut",
+    "action": "Action"
+  },
+
+  "mobile": {
+    "amount": "Montant",
+    "invoice": "Facture",
+    "paymentDate": "Date de paiement"
+  },
+
+  "buttons": {
+    "download": "Télécharger"
+  },
+
+  "status": {
+    "success": "Succès"
+  }
+}

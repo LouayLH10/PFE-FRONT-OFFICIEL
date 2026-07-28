@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import {
   PieChart,
   Pie,
@@ -20,23 +21,24 @@ export default function ProjectStatusChart({
   active,
   pending,
 }: ProjectStatusChartProps) {
-  const data = [
-    {
-      name: "Completed",
-      value: completed,
-      color: "#22C55E",
-    },
-    {
-      name: "In Progress",
-      value: active,
-      color: "#3B82F6",
-    },
-    {
-      name: "Pending",
-      value: pending,
-      color: "#F59E0B",
-    },
-  ];
+  const { t } = useTranslation("dashboard");
+const data = [
+  {
+    name: t("projectStatus.completed"),
+    value: completed,
+    color: "#22C55E",
+  },
+  {
+    name: t("projectStatus.active"),
+    value: active,
+    color: "#3B82F6",
+  },
+  {
+    name: t("projectStatus.pending"),
+    value: pending,
+    color: "#F59E0B",
+  },
+];
 
   const total =
     completed + active + pending;
@@ -47,13 +49,13 @@ export default function ProjectStatusChart({
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">
-            Project Status
-          </h2>
+        <h2 className="text-xl font-bold text-gray-800">
+  {t("projectStatus.title")}
+</h2>
 
-          <p className="text-sm text-gray-500">
-            Distribution of projects
-          </p>
+<p className="text-sm text-gray-500">
+  {t("projectStatus.subtitle")}
+</p>
         </div>
       </div>
 
@@ -96,45 +98,45 @@ export default function ProjectStatusChart({
       {/* FOOTER */}
       <div className="grid grid-cols-4 gap-4 mt-2">
 
-        <div className="bg-green-50 rounded-2xl p-3 text-center">
-          <p className="text-green-600 text-sm">
-            Completed
-          </p>
+<div className="bg-green-50 rounded-2xl p-3 text-center">
+  <p className="text-green-600 text-sm">
+    {t("projectStatus.completed")}
+  </p>
 
-          <p className="font-bold text-xl">
-            {completed}
-          </p>
-        </div>
+  <p className="font-bold text-xl">
+    {completed}
+  </p>
+</div>
 
-        <div className="bg-blue-50 rounded-2xl p-3 text-center">
-          <p className="text-blue-600 text-sm">
-            Active
-          </p>
+<div className="bg-blue-50 rounded-2xl p-3 text-center">
+  <p className="text-blue-600 text-sm">
+    {t("projectStatus.active")}
+  </p>
 
-          <p className="font-bold text-xl">
-            {active}
-          </p>
-        </div>
+  <p className="font-bold text-xl">
+    {active}
+  </p>
+</div>
 
-        <div className="bg-amber-50 rounded-2xl p-3 text-center">
-          <p className="text-amber-600 text-sm">
-            Pending
-          </p>
+<div className="bg-amber-50 rounded-2xl p-3 text-center">
+  <p className="text-amber-600 text-sm">
+    {t("projectStatus.pending")}
+  </p>
 
-          <p className="font-bold text-xl">
-            {pending}
-          </p>
-        </div>
+  <p className="font-bold text-xl">
+    {pending}
+  </p>
+</div>
 
-        <div className="bg-gray-50 rounded-2xl p-3 text-center">
-          <p className="text-gray-600 text-sm">
-            Total
-          </p>
+<div className="bg-gray-50 rounded-2xl p-3 text-center">
+  <p className="text-gray-600 text-sm">
+    {t("projectStatus.total")}
+  </p>
 
-          <p className="font-bold text-xl">
-            {total}
-          </p>
-        </div>
+  <p className="font-bold text-xl">
+    {total}
+  </p>
+</div>  
 
       </div>
     </div>

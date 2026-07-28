@@ -6,54 +6,56 @@ import {
   ShoppingCart,
   Truck,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const activities = [
+
+export default function UpcomingActivity() {
+    const { t } = useTranslation("dashboard");
+  const activities = [
   {
     id: 1,
-    title: "Quote waiting for approval",
-    description: "Quote #QT-2026-001",
-    date: "Today",
+    title: t("upcomingActivity.activities.quoteWaitingApproval"),
+    description: t("upcomingActivity.activities.quoteDescription"),
+    date: t("upcomingActivity.activities.today"),
     icon: FileText,
     color: "bg-yellow-100 text-yellow-600",
   },
   {
     id: 2,
-    title: "Invoice overdue",
-    description: "Invoice #INV-2026-015",
-    date: "2 days ago",
+    title: t("upcomingActivity.activities.invoiceOverdue"),
+    description: t("upcomingActivity.activities.invoiceDescription"),
+    date: t("upcomingActivity.activities.twoDaysAgo"),
     icon: Receipt,
     color: "bg-red-100 text-red-600",
   },
   {
     id: 3,
-    title: "Purchase order pending confirmation",
-    description: "Order #PO-2026-021",
-    date: "Tomorrow",
+    title: t("upcomingActivity.activities.purchaseOrderPending"),
+    description: t("upcomingActivity.activities.orderDescription"),
+    date: t("upcomingActivity.activities.tomorrow"),
     icon: ShoppingCart,
     color: "bg-blue-100 text-blue-600",
   },
   {
     id: 4,
-    title: "Delivery scheduled",
-    description: "Project Alpha",
-    date: "Next week",
+    title: t("upcomingActivity.activities.deliveryScheduled"),
+    description: t("upcomingActivity.activities.deliveryDescription"),
+    date: t("upcomingActivity.activities.nextWeek"),
     icon: Truck,
     color: "bg-green-100 text-green-600",
   },
 ];
-
-export default function UpcomingActivity() {
   return (
     <div className="">
 
       {/* Header */}
       <div className="px-6 py-5 border-b border-gray-100">
         <h2 className="text-xl font-bold text-gray-800">
-          Upcoming Activities
+        {t("upcomingActivity.title")}
         </h2>
 
         <p className="text-sm text-gray-500 mt-1">
-          Deliverables, invoices, orders and quotes
+          {t("upcomingActivity.description")}
         </p>
       </div>
 

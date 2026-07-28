@@ -1,0 +1,125 @@
+{
+  "title": "Dashboard",
+  "overview": "Overview of your business metrics",
+
+  "kpi": {
+    "projects": "Projects",
+    "purchaseOrders": "Purchase Orders",
+    "deliveryNotes": "Delivery Notes",
+    "revenue": "Revenue",
+    "paidAmount": "Paid Amount",
+    "unpaidAmount": "Unpaid Amount",
+    "ocrDocuments": "OCR Documents",
+    "aiHighRisk": "AI High Risk"
+  },
+  "projectStatus": {
+    "title": "Project Status",
+    "subtitle": "Distribution of projects",
+    "completed": "Completed",
+    "active": "In Progress",
+    "pending": "Pending",
+    "total": "Total"
+  },
+  "orderChart": {
+    "title": "Orders by Status",
+    "description": "Distribution of orders",
+
+    "approved": "Approved",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "received": "Received"
+  },
+
+  "invoiceStatus": {
+    "title": "Invoice Status",
+    "subtitle": "Paid vs Unpaid invoices",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "total": "Total"
+  },
+  "reminders": {
+  "title": "Reminders",
+  "description": "Overdue payments & quotes",
+  "viewDetails": "View Details",
+  "daysSuffix": "d",
+
+  "items": {
+    "invoice1Title": "Invoice INV-2026-015",
+    "invoice1Subtitle": "Client: ABC Company",
+
+    "quoteTitle": "Quote QT-2026-009",
+    "quoteSubtitle": "Waiting approval",
+
+    "invoice2Title": "Invoice INV-2026-022",
+    "invoice2Subtitle": "Client: TechCorp"
+  }
+},
+  "purchasedProducts": {
+    "title": "Purchased Products",
+    "description": "Products purchased over the year",
+    "thisYear": "This Year",
+    "lastYear": "Last Year",
+
+    "totalPurchased": "Total Purchased",
+    "bestMonth": "Best Month",
+    "averagePerMonth": "Average / Month",
+
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  }
+,
+  "upcomingActivity": {
+  "title": "Upcoming Activities",
+  "description": "Deliverables, invoices, orders and quotes",
+
+  "activities": {
+    "quoteWaitingApproval": "Quote waiting for approval",
+    "invoiceOverdue": "Invoice overdue",
+    "purchaseOrderPending": "Purchase order pending confirmation",
+    "deliveryScheduled": "Delivery scheduled",
+
+    "quoteDescription": "Quote #QT-2026-001",
+    "invoiceDescription": "Invoice #INV-2026-015",
+    "orderDescription": "Order #SO-2026-021",
+    "deliveryDescription": "Project Alpha",
+
+    "today": "Today",
+    "twoDaysAgo": "2 days ago",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "Next week"
+  }
+},
+  "shareModal": {
+    "title": "Share Dashboard Report",
+    "description": "Send the generated PDF report by email",
+    "recipientEmail": "Recipient email",
+    "emailSubject": "Email subject",
+    "message": "Write your message...",
+    "cancel": "Cancel",
+    "send": "Send",
+    "sending": "Sending..."
+  },
+
+  "success": {
+    "title": "Email Sent",
+    "description": "Dashboard report has been sent successfully.",
+    "ok": "OK"
+  },
+
+  "error": {
+    "title": "Failed",
+    "ok": "OK"
+  }
+}

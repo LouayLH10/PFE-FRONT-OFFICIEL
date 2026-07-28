@@ -1,0 +1,50 @@
+{
+  "search": "Search document...",
+  "loading": "Loading...",
+  "loadError": "Error while loading documents",
+
+  "fileName": "File Name",
+  "type": "Type",
+  "status": "Status",
+  "riskPercentage": "Risk Percentage",
+  "priority": "Priority",
+  "createdAt": "Created At",
+
+  "noResults": "No results found",
+
+  "aiSummary": "AI Summary",
+  "noSummary": "No summary available",
+
+  "executiveReport": "AI Executive Report",
+  "noExecutiveReport": "No executive report available",
+
+  "risks": "Risks",
+  "noRisks": "No risks detected",
+
+  "recommendations": "Recommendations",
+  "noRecommendations": "No recommendations",
+
+  "financialAnalysis": "Financial Analysis",
+  "subtotal": "Subtotal",
+  "tax": "Tax",
+  "total": "Total",
+  "paymentRisk": "Payment Risk",
+
+  "ocrConfidence": "OCR Confidence Score",
+  "ocrReliability": "extraction reliability",
+
+  "riskScore": "Risk Score",
+  "businessRisk": "business risk level",
+
+  "statusDraft": "Draft",
+  "statusSent": "Sent",
+  "statusPaid": "Paid",
+
+  "priorityLow": "Low",
+  "priorityMedium": "Medium",
+  "priorityHigh": "High",
+
+  "riskLow": "Low",
+  "riskMedium": "Medium",
+  "riskHigh": "High"
+}

@@ -1,0 +1,42 @@
+{
+  "search": {
+    "placeholder": "Search delivery notes..."
+  },
+
+  "table": {
+    "reference": "Reference",
+    "client": "Client",
+    "email": "Email",
+    "location": "Location",
+    "deliveryDate": "Delivery Date",
+    "items": "Items",
+    "status": "Status",
+    "created": "Created",
+    "action": "Action"
+  },
+
+  "status": {
+    "PENDING": "PENDING",
+    "DELIVERED": "DELIVERED",
+    "SHIPPED":"SHIPPED"
+  },
+
+  "buttons": {
+    "download": "Download"
+  },
+
+  "messages": {
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "fetchError": "Failed to load delivery notes."
+  },
+
+  "mobile": {
+    "client": "Client",
+    "email": "Email",
+    "location": "Location",
+    "deliveryDate": "Delivery Date",
+    "items": "Items",
+    "created": "Created"
+  }
+}

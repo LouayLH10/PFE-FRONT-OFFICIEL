@@ -6,6 +6,8 @@ import { getUserFromToken } from "../../auth/pages/login/user";
 import { useRouter } from "next/navigation";
 import SearchBar from "../../components/searchBar";
 import { downloadDN,fetchDN } from "../service/deliveryNoteService";
+import { formatDate } from "../../services/generalFunctions";
+import { useTranslation } from "react-i18next";
 
 type DeliveryNote = {
   id: number;
@@ -43,17 +45,6 @@ function Page() {
 
   const router = useRouter();
 
-  // ✅ format date
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")} ${String(
-      date.getHours()
-    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  };
 
   // ✅ filter
 const filteredDN = deliveryNotes.filter((dn) =>
@@ -97,219 +88,287 @@ const filteredDN = deliveryNotes.filter((dn) =>
 
 
   // ✅ STATUS
+const { t } = useTranslation("deliveryNote");
+
 const Status = (status: string) => {
   switch (status) {
     case "PENDING":
       return {
-        state: "PENDING",
+        state: t("status.PENDING").toUpperCase(),
         style: "bg-yellow-500 text-white px-2 py-1 rounded",
       };
+
     case "DELIVERED":
       return {
-        state: "DELIVERED",
+        state: t("status.DELIVERED").toUpperCase(),
         style: "bg-green-500 text-white px-2 py-1 rounded",
       };
+
     default:
       return {
-        state: status,
+        state: t("status.SHIPPED").toUpperCase(),
         style: "bg-gray-400 text-white px-2 py-1 rounded",
       };
   }
 };
   if (!isAuthChecked) return null;
 
-  return (
-    <div className="p-6 mt-5">
-    
+return (
+  <div className="p-4 sm:p-6 mt-5">
 
-      <SearchBar
-        value={query}
-        onChange={setQuery}
-        placeholder="Search Delivey Note..."
-      />
+<SearchBar
+  value={query}
+  onChange={setQuery}
+  placeholder={t("search.placeholder")}
+/>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+{loading && (
+  <p className="mt-6 text-center">
+    {t("messages.loading")}
+  </p>
+)}
 
-      {!loading && !error && (
-<div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-200">
+{error && (
+  <p className="mt-6 text-center text-red-500">
+    {t("messages.fetchError")}
+  </p>
+)}
 
-  <table className="min-w-full text-sm text-gray-700">
+    {!loading && !error && (
+      <>
+        {/* ========================= */}
+        {/* Desktop */}
+        {/* ========================= */}
 
-    {/* HEADER */}
-    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-      <tr>
-        <th className="px-6 py-5 text-left font-semibold">
-          Reference
-        </th>
+        <div className="hidden lg:block overflow-x-auto bg-white rounded-3xl shadow-sm border border-gray-200">
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Client
-        </th>
+          <table className="min-w-full text-sm text-gray-700">
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Email
-        </th>
+         <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+  <tr>
+    <th className="px-6 py-5 text-left">
+      {t("table.reference")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Location
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.client")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Delivery Date
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.email")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Items
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.location")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Status
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.deliveryDate")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Created At
-        </th>
+    <th className="px-6 py-5 text-left">
+      {t("table.items")}
+    </th>
 
-        <th className="px-6 py-5 text-left font-semibold">
-          Action
-        </th>
-      </tr>
-    </thead>
+    <th className="px-6 py-5 text-left">
+      {t("table.status")}
+    </th>
 
-    {/* BODY */}
-    <tbody className="divide-y divide-gray-100">
+    <th className="px-6 py-5 text-left">
+      {t("table.created")}
+    </th>
 
-      {filteredDN.length === 0 ? (
-        <tr>
-          <td
-            colSpan={9}
-            className="text-center py-10 text-gray-400"
-          >
-            No results found
-          </td>
-        </tr>
-      ) : (
-        filteredDN.map((dn, index) => {
-          const statusObj = Status(dn.status);
+    <th className="px-6 py-5 text-left">
+      {t("table.action")}
+    </th>
+  </tr>
+</thead>
 
-          return (
-            <tr
-              key={dn.id}
-              className={`transition hover:bg-gray-50 ${
-                index % 2 === 0
-                  ? "bg-white"
-                  : "bg-gray-50/50"
-              }`}
-            >
+            <tbody className="divide-y divide-gray-100">
 
-              {/* REFERENCE */}
-              <td className="px-6 py-5 font-semibold text-gray-900">
-                {dn.reference}
-              </td>
+              {filteredDN.length === 0 ? (
 
-              {/* CLIENT */}
-              <td className="px-6 py-5">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {dn.contact?.user?.name || "-"}
-                  </span>
+                <tr>
+  <td
+  colSpan={9}
+  className="text-center py-10 text-gray-400"
+>
+  {t("messages.noResults")}
+</td>
+                </tr>
 
-                  <span className="text-xs text-gray-400">
-                    Client Name
-                  </span>
-                </div>
-              </td>
+              ) : (
 
-              {/* EMAIL */}
-              <td className="px-6 py-5">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {dn.contact?.user?.email || "-"}
-                  </span>
+                filteredDN.map((dn, index) => {
 
-                  <span className="text-xs text-gray-400">
-                    Contact Email
-                  </span>
-                </div>
-              </td>
+                  const statusObj = Status(dn.status);
 
-              {/* LOCATION */}
-              <td className="px-6 py-5">
-                <div className="max-w-[220px]">
-                  <p className="font-medium text-gray-800">
-                    {dn.location}
-                  </p>
+                  return (
 
-                  <p className="text-xs text-gray-400 mt-1">
-                    Delivery Location
-                  </p>
-                </div>
-              </td>
+                    <tr
+                      key={dn.id}
+                      className={`hover:bg-gray-50 ${
+                        index % 2 === 0
+                          ? "bg-white"
+                          : "bg-gray-50/40"
+                      }`}
+                    >
 
-              {/* DELIVERY DATE */}
-              <td className="px-6 py-5">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {formatDate(dn.deliveryDate)}
-                  </span>
+                      <td className="px-6 py-5 font-semibold">
+                        {dn.reference}
+                      </td>
 
-                  <span className="text-xs text-gray-400">
-                    Scheduled Delivery
-                  </span>
-                </div>
-              </td>
+                      <td className="px-6 py-5">
+                        {dn.contact?.user?.name || "-"}
+                      </td>
 
-              {/* ITEMS */}
-              <td className="px-6 py-5">
-                <span className="font-semibold">
-                  {dn.items?.length || 0} items
-                </span>
-              </td>
+                      <td className="px-6 py-5">
+                        {dn.contact?.user?.email || "-"}
+                      </td>
 
-              {/* STATUS */}
-              <td className="px-6 py-5">
-                <div
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusObj.style}`}
-                >
-                  {statusObj.state}
-                </div>
-              </td>
+                      <td className="px-6 py-5">
+                        {dn.location}
+                      </td>
 
-              {/* CREATED */}
-              <td className="px-6 py-5">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {formatDate(dn.createdAt)}
-                  </span>
+                      <td className="px-6 py-5">
+                        {formatDate(
+                          dn.deliveryDate
+                        )}
+                      </td>
 
-                  <span className="text-xs text-gray-400">
-                    Created Date
-                  </span>
-                </div>
-              </td>
+                      <td className="px-6 py-5">
+                        {dn.items?.length || 0}
+                      </td>
 
-              {/* ACTION */}
-              <td className="px-6 py-5">
-                <button
-                  onClick={() => downloadDN(dn.id)}
-                  className="px-5 py-2 rounded-xl text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition shadow-sm"
-                >
-                  Download
-                </button>
-              </td>
+                      <td className="px-6 py-5">
+                        <span
+                          className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${statusObj.style}`}
+                        >
+                          {statusObj.state}
+                        </span>
+                      </td>
 
-            </tr>
-          );
-        })
-      )}
+                      <td className="px-6 py-5">
+                        {formatDate(
+                          dn.createdAt
+                        )}
+                      </td>
 
-    </tbody>
-  </table>
-</div>
-      )}
+                      <td className="px-6 py-5">
+
+                        <button
+                          onClick={() =>
+                            downloadDN(dn.id)
+                          }
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm transition"
+                        >
+                         {t("buttons.download")}
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  );
+                })
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {/* ========================= */}
+        {/* Mobile */}
+        {/* ========================= */}
+<div className="lg:hidden space-y-4">
+  {filteredDN.length === 0 ? (
+    <div className="bg-white rounded-3xl p-8 text-center text-gray-400">
+      {t("messages.noResults")}
     </div>
-  );
+  ) : (
+    filteredDN.map((dn) => {
+      const statusObj = Status(dn.status);
+
+      return (
+        <div
+          key={dn.id}
+          className="bg-white rounded-3xl border border-gray-200 shadow-sm p-5"
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-lg">
+                {dn.reference}
+              </h3>
+
+              <p className="text-gray-500 text-sm mt-1">
+                {dn.contact?.user?.name}
+              </p>
+            </div>
+
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${statusObj.style}`}
+            >
+              {statusObj.state}
+            </span>
+          </div>
+
+          <div className="mt-5 space-y-2 text-sm">
+            <p>
+              <span className="font-semibold">
+                {t("mobile.email")}:
+              </span>{" "}
+              {dn.contact?.user?.email}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.location")}:
+              </span>{" "}
+              {dn.location}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.deliveryDate")}:
+              </span>{" "}
+              {formatDate(dn.deliveryDate)}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.items")}:
+              </span>{" "}
+              {dn.items?.length || 0}
+            </p>
+
+            <p>
+              <span className="font-semibold">
+                {t("mobile.created")}:
+              </span>{" "}
+              {formatDate(dn.createdAt)}
+            </p>
+          </div>
+
+          <button
+            onClick={() => downloadDN(dn.id)}
+            className="mt-5 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition"
+          >
+            {t("buttons.download")}
+          </button>
+        </div>
+      );
+    })
+  )}
+</div>
+
+      </>
+    )}
+
+  </div>
+);
 }
 
 export default Page;

@@ -1,0 +1,50 @@
+{
+  "search": "Rechercher un document...",
+  "loading": "Chargement...",
+  "loadError": "Erreur lors du chargement des documents",
+
+  "fileName": "Nom du fichier",
+  "type": "Type",
+  "status": "Statut",
+  "riskPercentage": "Pourcentage de risque",
+  "priority": "Priorité",
+  "createdAt": "Créé le",
+
+  "noResults": "Aucun résultat trouvé",
+
+  "aiSummary": "Résumé IA",
+  "noSummary": "Aucun résumé disponible",
+
+  "executiveReport": "Rapport exécutif IA",
+  "noExecutiveReport": "Aucun rapport exécutif disponible",
+
+  "risks": "Risques",
+  "noRisks": "Aucun risque détecté",
+
+  "recommendations": "Recommandations",
+  "noRecommendations": "Aucune recommandation",
+
+  "financialAnalysis": "Analyse financière",
+  "subtotal": "Sous-total",
+  "tax": "Taxe",
+  "total": "Total",
+  "paymentRisk": "Risque de paiement",
+
+  "ocrConfidence": "Score de confiance OCR",
+  "ocrReliability": "de fiabilité de l'extraction",
+
+  "riskScore": "Score de risque",
+  "businessRisk": "de niveau de risque métier",
+
+  "statusDraft": "Brouillon",
+  "statusSent": "Envoyé",
+  "statusPaid": "Payé",
+
+  "priorityLow": "Faible",
+  "priorityMedium": "Moyenne",
+  "priorityHigh": "Élevée",
+
+  "riskLow": "Faible",
+  "riskMedium": "Moyen",
+  "riskHigh": "Élevé"
+}

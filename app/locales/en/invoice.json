@@ -1,0 +1,35 @@
+{
+  "search": "Search invoice...",
+  "loading": "Loading...",
+  "loadError": "Error while loading invoices",
+
+  "reference": "Reference",
+  "email": "Email",
+  "website": "Website",
+  "description": "Description",
+  "amount": "Amount",
+  "vat": "VAT",
+  "total": "Total",
+  "status": "Status",
+  "createdAt": "Created At",
+  "action": "Action",
+
+  "clientEmail": "Client Email",
+  "visit": "Visit",
+  "invoiceDescription": "Invoice Description",
+  "createdDate": "Created Date",
+
+  "download": "Download",
+  "analyse": "Analyse with AI",
+  "alreadyAnalysed": "Already Analysed",
+
+  "noResults": "No results found",
+
+  "analysisTitle": "AI Analysis in Progress",
+  "analysisDescription": "OCR extraction and AI insights generation are currently running. This operation may take a few minutes. Please wait...",
+
+  "statusDraft": "Draft",
+  "statusSent": "Sent",
+  "statusPaid": "Paid",
+  "statusCancelled": "Cancelled"
+}

@@ -1,0 +1,49 @@
+{
+  "search": {
+    "placeholder": "Search orders..."
+  },
+
+  "table": {
+    "reference": "Reference",
+    "supplier": "Supplier",
+    "email": "Email",
+    "phone": "Phone",
+    "orderDate": "Order Date",
+    "deliveryDate": "Delivery Date",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "status": "Status",
+    "created": "Created",
+    "action": "Action"
+  },
+
+  "status": {
+    "PENDING": "PENDING",
+    "APPROVED": "APPROVED",
+    "DELIVERED": "DELIVERED",
+    "RECEIVED":"RECEIVED",
+    "CANCELLED":"CANCELLED"
+  },
+
+  "buttons": {
+    "download": "Download"
+  },
+
+  "messages": {
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "fetchError": "Failed to load purchase orders."
+  },
+
+  "mobile": {
+    "supplier": "Supplier",
+    "email": "Email",
+    "phone": "Phone",
+    "orderDate": "Order Date",
+    "deliveryDate": "Delivery Date",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total"
+  }
+}

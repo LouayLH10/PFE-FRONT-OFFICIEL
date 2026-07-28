@@ -1,0 +1,42 @@
+{
+  "searchPlaceholder": "Rechercher un devis...",
+
+  "loading": "Chargement...",
+  "loadingError": "Erreur lors du chargement des devis",
+  "noResults": "Aucun résultat trouvé",
+
+  "table": {
+    "reference": "Référence",
+    "email": "Email",
+    "website": "Site web",
+    "description": "Description",
+    "amount": "Montant",
+    "tva": "TVA",
+    "total": "Total",
+    "status": "Statut",
+    "created": "Créé le",
+    "action": "Action"
+  },
+
+  "status": {
+    "draft": "Brouillon",
+    "sent": "Envoyé",
+    "ready": "Prêt",
+    "paid": "Payé",
+    "cancelled": "Annulé"
+  },
+
+  "buttons": {
+    "download": "Télécharger",
+    "visit": "Visiter",
+    "visitWebsite": "Visiter le site"
+  },
+
+  "mobile": {
+    "email": "Email",
+    "description": "Description",
+    "amount": "Montant",
+    "tva": "TVA",
+    "total": "Total"
+  }
+}

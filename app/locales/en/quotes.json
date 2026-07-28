@@ -1,0 +1,42 @@
+{
+  "searchPlaceholder": "Search quote...",
+
+  "loading": "Loading...",
+  "loadingError": "Error while loading quotes",
+  "noResults": "No results found",
+
+  "table": {
+    "reference": "Reference",
+    "email": "Email",
+    "website": "Website",
+    "description": "Description",
+    "amount": "Amount",
+    "tva": "VAT",
+    "total": "Total",
+    "status": "Status",
+    "created": "Created",
+    "action": "Action"
+  },
+
+  "status": {
+    "draft": "Draft",
+    "sent": "Sent",
+    "ready": "Ready",
+    "paid": "Paid",
+    "cancelled": "Cancelled"
+  },
+
+  "buttons": {
+    "download": "Download",
+    "visit": "Visit",
+    "visitWebsite": "Visit Website"
+  },
+
+  "mobile": {
+    "email": "Email",
+    "description": "Description",
+    "amount": "Amount",
+    "tva": "VAT",
+    "total": "Total"
+  }
+}

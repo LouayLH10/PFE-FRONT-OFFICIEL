@@ -5,41 +5,41 @@ import {
   Receipt,
   FileText,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const reminders = [
+
+
+export default function Reminders() {
+  const { t } = useTranslation("dashboard");
+  const reminders = [
   {
     id: 1,
     type: "payment",
-    title: "Invoice INV-2026-015",
-    subtitle: "Client: ABC Company",
+    title: t("reminders.items.invoice1Title"),
+    subtitle: t("reminders.items.invoice1Subtitle"),
     daysLate: 12,
     icon: Receipt,
-    color:
-      "bg-red-50 border-red-200 text-red-600",
+    color: "bg-red-50 border-red-200 text-red-600",
   },
   {
     id: 2,
     type: "quote",
-    title: "Quote QT-2026-009",
-    subtitle: "Waiting approval",
+    title: t("reminders.items.quoteTitle"),
+    subtitle: t("reminders.items.quoteSubtitle"),
     daysLate: 5,
     icon: FileText,
-    color:
-      "bg-yellow-50 border-yellow-200 text-yellow-600",
+    color: "bg-yellow-50 border-yellow-200 text-yellow-600",
   },
   {
     id: 3,
     type: "payment",
-    title: "Invoice INV-2026-022",
-    subtitle: "Client: TechCorp",
+    title: t("reminders.items.invoice2Title"),
+    subtitle: t("reminders.items.invoice2Subtitle"),
     daysLate: 3,
     icon: Receipt,
-    color:
-      "bg-red-50 border-red-200 text-red-600",
+    color: "bg-red-50 border-red-200 text-red-600",
   },
 ];
-
-export default function Reminders() {
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm">
 
@@ -48,11 +48,11 @@ export default function Reminders() {
 
         <div>
           <h2 className="font-bold text-xl text-gray-800">
-            Reminders
+{t("reminders.title")}
           </h2>
 
           <p className="text-sm text-gray-500 mt-1">
-            Overdue payments & quotes
+{t("reminders.description")}
           </p>
         </div>
 
@@ -95,15 +95,16 @@ export default function Reminders() {
                 </div>
 
                 <div className="bg-white px-3 py-1 rounded-full text-sm font-semibold">
-                  {item.daysLate}d
-                </div>
+  {item.daysLate}
+  {t("reminders.daysSuffix")}                
+  </div>
 
               </div>
 
               <div className="mt-4 flex justify-end">
 
                 <button className="bg-white px-4 py-2 rounded-xl text-sm font-medium hover:shadow">
-                  View Details
+  {t("reminders.viewDetails")}
                 </button>
 
               </div>

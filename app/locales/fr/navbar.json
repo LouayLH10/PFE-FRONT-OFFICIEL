@@ -1,0 +1,17 @@
+{
+  "welcome": "Bon retour",
+  "search": "Rechercher...",
+
+  "pages": {
+    "dashboard": "Tableau de bord",
+    "quotes": "Devis",
+    "deliveryNotes": "Bons de livraison",
+    "orders": "Commandes",
+    "invoices": "Factures",
+    "payments": "Paiements",
+    "projects": "Projets",
+    "messages": "Messages",   
+    "aidocumentsinsights":"Aperçus des documents par IA "
+
+  }
+}

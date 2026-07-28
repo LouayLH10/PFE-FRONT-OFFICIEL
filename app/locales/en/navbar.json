@@ -1,0 +1,16 @@
+{
+  "welcome": "Welcome Back",
+  "search": "Search...",
+
+  "pages": {
+    "dashboard": "Dashboard",
+    "quotes": "Quotes",
+    "deliveryNotes": "Delivery Notes",
+    "orders": "Orders",
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "projects": "Projects",
+    "messages": "Messages",
+    "aidocumentsinsights":"AI Document Insights"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "search": "Search payment...",
+  "loading": "Loading...",
+  "noResults": "No results found",
+
+  "table": {
+    "reference": "Reference",
+    "amount": "Amount",
+    "invoice": "Invoice",
+    "paymentDate": "Payment Date",
+    "status": "Status",
+    "action": "Action"
+  },
+
+  "mobile": {
+    "amount": "Amount",
+    "invoice": "Invoice",
+    "paymentDate": "Payment Date"
+  },
+
+  "buttons": {
+    "download": "Download"
+  },
+
+  "status": {
+    "success": "Success"
+  }
+}

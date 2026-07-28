@@ -1,0 +1,35 @@
+{
+  "search": "Rechercher une facture...",
+  "loading": "Chargement...",
+  "loadError": "Erreur lors du chargement des factures",
+
+  "reference": "Référence",
+  "email": "Email",
+  "website": "Site web",
+  "description": "Description",
+  "amount": "Montant",
+  "vat": "TVA",
+  "total": "Total",
+  "status": "Statut",
+  "createdAt": "Créée le",
+  "action": "Action",
+
+  "clientEmail": "Email du client",
+  "visit": "Visiter",
+  "invoiceDescription": "Description de la facture",
+  "createdDate": "Date de création",
+
+  "download": "Télécharger",
+  "analyse": "Analyser avec l'IA",
+  "alreadyAnalysed": "Déjà analysée",
+
+  "noResults": "Aucun résultat trouvé",
+
+  "analysisTitle": "Analyse IA en cours",
+  "analysisDescription": "L'extraction OCR et l'analyse par IA sont en cours. Cette opération peut prendre quelques minutes. Veuillez patienter...",
+
+  "statusDraft": "Brouillon",
+  "statusSent": "Envoyée",
+  "statusPaid": "Payée",
+  "statusCancelled": "Annulée"
+}

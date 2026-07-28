@@ -1,0 +1,49 @@
+{
+  "search": {
+    "placeholder": "Rechercher une commande..."
+  },
+
+  "table": {
+    "reference": "Référence",
+    "supplier": "Fournisseur",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "orderDate": "Date de commande",
+    "deliveryDate": "Date de livraison",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "status": "Statut",
+    "created": "Créé le",
+    "action": "Action"
+  },
+
+  "status": {
+    "PENDING": "EN ATTENTE",
+    "APPROVED": "APPROUVÉE",
+    "DELIVERED": "LIVRÉE",
+    "RECEIVED":"RECU",
+    "CANCELLED":"ANNULÉ"
+  },
+
+  "buttons": {
+    "download": "Télécharger"
+  },
+
+  "messages": {
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "fetchError": "Erreur lors du chargement des commandes."
+  },
+
+  "mobile": {
+    "supplier": "Fournisseur",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "orderDate": "Date de commande",
+    "deliveryDate": "Date de livraison",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total"
+  }
+}
