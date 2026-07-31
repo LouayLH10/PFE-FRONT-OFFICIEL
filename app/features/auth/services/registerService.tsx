@@ -8,6 +8,6 @@ export const registerService = async (email: string, password: string,name:strin
         email,
         password,
   });
-
+console.log(response)
   return response.data;
 };
